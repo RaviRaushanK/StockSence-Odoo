@@ -1,0 +1,72 @@
+:root {
+  --ss-primary: #2563eb;
+  --ss-primary-hover: #1d4ed8;
+  --ss-primary-active: #1e40af;
+  --ss-primary-soft: #eff6ff;
+  --ss-primary-border: #bfdbfe;
+
+  --ss-sidebar: #0f172a;
+  --ss-sidebar-hover: #1e293b;
+  --ss-sidebar-active: #1d4ed8;
+  --ss-sidebar-text: #cbd5e1;
+  --ss-sidebar-muted: #94a3b8;
+  --ss-sidebar-border: #1e293b;
+
+  --ss-bg: #f8fafc;
+  --ss-card: #ffffff;
+  --ss-text: #0f172a;
+  --ss-text-secondary: #64748b;
+  --ss-border: #e2e8f0;
+  --ss-border-strong: #cbd5e1;
+
+  --ss-success: #16a34a;
+  --ss-success-soft: #f0fdf4;
+  --ss-warning: #f59e0b;
+  --ss-warning-soft: #fffbeb;
+  --ss-danger: #dc2626;
+  --ss-danger-soft: #fef2f2;
+  --ss-info: #0ea5e9;
+  --ss-info-soft: #f0f9ff;
+
+  --ss-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+  --ss-font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono',
+    monospace;
+
+  --ss-text-xs: 0.75rem;
+  --ss-text-sm: 0.875rem;
+  --ss-text-base: 1rem;
+  --ss-text-lg: 1.125rem;
+  --ss-text-xl: 1.375rem;
+  --ss-text-2xl: 1.75rem;
+
+  --ss-space-1: 0.25rem;
+  --ss-space-2: 0.5rem;
+  --ss-space-3: 0.75rem;
+  --ss-space-4: 1rem;
+  --ss-space-5: 1.5rem;
+  --ss-space-6: 2rem;
+  --ss-space-7: 3rem;
+
+  --ss-radius-sm: 6px;
+  --ss-radius: 10px;
+  --ss-radius-lg: 14px;
+  --ss-radius-pill: 999px;
+
+  --ss-shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --ss-shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.07), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --ss-shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --ss-shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.12);
+  --ss-focus-ring: 0 0 0 3px rgba(37, 99, 235, 0.35);
+
+  --ss-transition: 160ms cubic-bezier(0.4, 0, 0.2, 1);
+  --ss-control-height: 42px;
+  --ss-control-height-sm: 36px;
+  --ss-control-height-lg: 48px;
+  --ss-sidebar-width: 264px;
+  --ss-topbar-height: 64px;
+  --ss-z-sidebar: 1040;
+  --ss-z-topbar: 1030;
+  --ss-z-overlay: 1055;
+  --ss-z-modal: 1060;
+}

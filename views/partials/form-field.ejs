@@ -1,0 +1,32 @@
+<div class="ss-field">
+  <label class="ss-field__label" for="<%= name %>">
+    <%= label %><% if (required) { %><span class="ss-field__required" aria-hidden="true">*</span><% } %>
+  </label>
+
+  <div class="ss-field__control">
+    <% var hasIcon = typeof icon !== 'undefined' && icon; %>
+    <% if (hasIcon) { %>
+      <span class="ss-field__icon"><i class="bi <%= icon %>" aria-hidden="true"></i></span>
+    <% } %>
+
+    <input
+      class="ss-input <%= hasIcon ? 'ss-input--with-icon' : '' %> <%= errors[name] ? 'ss-input--error' : '' %>"
+      id="<%= name %>"
+      name="<%= name %>"
+      type="<%= type %>"
+      value="<%= values[name] || '' %>"
+      placeholder="<%= placeholder %>"
+      autocomplete="<%= autocomplete %>"
+      <%= required ? 'required' : '' %>
+      <%= errors[name] ? 'aria-invalid="true"' : '' %>
+      <%= errors[name] ? 'aria-describedby="' + name + '-error"' : '' %>
+    />
+  </div>
+
+  <% if (errors[name]) { %>
+    <span class="ss-field__error" id="<%= name %>-error" role="alert">
+      <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
+      <%= errors[name] %>
+    </span>
+  <% } %>
+</div>

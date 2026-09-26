@@ -1,0 +1,9 @@
+<div class="ss-empty">
+  <span class="ss-empty__icon">
+    <i class="bi <%= typeof icon !== 'undefined' ? icon : 'bi-inbox' %>" aria-hidden="true"></i>
+  </span>
+  <h3 class="ss-empty__title"><%= title %></h3>
+  <% if (typeof description !== 'undefined' && description) { %>
+    <p class="ss-empty__text"><%= description %></p>
+  <% } %>
+</div>

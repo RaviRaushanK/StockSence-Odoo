@@ -1,0 +1,36 @@
+<div class="ss-dropdown" data-dropdown>
+  <button
+    type="button"
+    class="ss-user"
+    aria-haspopup="menu"
+    aria-expanded="false"
+    data-dropdown-toggle
+  >
+    <span class="ss-user__avatar" aria-hidden="true"><%= getInitials(user.fullName) %></span>
+    <span class="ss-user__meta">
+      <span class="ss-user__name"><%= user.fullName %></span>
+      <span class="ss-user__role"><%= getRoleLabel(user.role) %></span>
+    </span>
+    <i class="bi bi-chevron-down" aria-hidden="true" data-dropdown-icon></i>
+  </button>
+
+  <div class="ss-dropdown__menu" role="menu" hidden data-dropdown-menu>
+    <div class="ss-dropdown__header">
+      <p class="ss-dropdown__name"><%= user.fullName %></p>
+      <p class="ss-dropdown__email"><%= user.email %></p>
+    </div>
+
+    <a class="ss-dropdown__item" role="menuitem" href="/settings" data-dropdown-item>
+      <i class="bi bi-gear" aria-hidden="true"></i>
+      Account settings
+    </a>
+
+    <form method="post" action="/logout">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <button type="submit" class="ss-dropdown__item ss-dropdown__item--danger" role="menuitem" data-dropdown-item>
+        <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+        Sign out
+      </button>
+    </form>
+  </div>
+</div>

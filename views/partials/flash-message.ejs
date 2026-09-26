@@ -1,0 +1,13 @@
+<% if (flash) { %>
+  <div
+    class="ss-alert ss-alert--<%= flash.type %> ss-flash"
+    role="status"
+    data-flash
+  >
+    <i
+      class="bi <%= flash.type === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill' %>"
+      aria-hidden="true"
+    ></i>
+    <span><%= flash.message %></span>
+  </div>
+<% } %>

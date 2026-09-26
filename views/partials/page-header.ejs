@@ -1,0 +1,28 @@
+<header class="ss-page-header">
+  <nav aria-label="Breadcrumb">
+    <ol class="ss-breadcrumbs">
+      <li class="ss-breadcrumbs__item">
+        <a href="/dashboard">Home</a>
+        <i class="bi bi-chevron-right" aria-hidden="true"></i>
+      </li>
+      <li class="ss-breadcrumbs__item">
+        <span class="ss-breadcrumbs__current" aria-current="page"><%= title %></span>
+      </li>
+    </ol>
+  </nav>
+
+  <div class="ss-page-header__row">
+    <div>
+      <h1 class="ss-page-header__title"><%= title %></h1>
+      <% if (typeof subtitle !== 'undefined' && subtitle) { %>
+        <p class="ss-page-header__subtitle"><%= subtitle %></p>
+      <% } %>
+    </div>
+
+    <% if (typeof badge !== 'undefined' && badge) { %>
+      <div class="ss-page-header__actions">
+        <span class="ss-badge ss-badge--<%= badge.tone %>"><%= badge.label %></span>
+      </div>
+    <% } %>
+  </div>
+</header>

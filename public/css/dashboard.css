@@ -1,0 +1,59 @@
+/* Page-level styles: dashboard content and the standalone error pages. */
+
+.ss-module-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--ss-space-4);
+}
+
+.ss-module-grid__title {
+  font-size: 1rem;
+}
+
+.ss-error-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--ss-space-5);
+  background-color: var(--ss-bg);
+}
+
+.ss-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ss-space-3);
+  max-width: 520px;
+  padding: var(--ss-space-6);
+  text-align: center;
+  background-color: var(--ss-card);
+  border: 1px solid var(--ss-border);
+  border-radius: var(--ss-radius-lg);
+  box-shadow: var(--ss-shadow-sm);
+}
+
+.ss-error__code {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ss-primary);
+}
+
+.ss-error__title {
+  font-size: var(--ss-text-xl);
+  font-weight: 700;
+}
+
+.ss-error__text {
+  font-size: var(--ss-text-sm);
+  color: var(--ss-text-secondary);
+}
+
+.ss-error__detail {
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-text-xs);
+  color: var(--ss-text-secondary);
+  word-break: break-word;
+}

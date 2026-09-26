@@ -1,0 +1,53 @@
+<section class="ss-card ss-auth__card">
+  <div class="ss-auth__header">
+    <h1 class="ss-auth__title">Welcome back</h1>
+    <p class="ss-auth__subtitle">Sign in to continue to your inventory workspace.</p>
+  </div>
+
+  <%- include('../partials/flash-message') %>
+
+  <form class="ss-form" method="post" action="/login" novalidate>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+    <%- include('../partials/form-field', {
+      name: 'email',
+      label: 'Email address',
+      type: 'email',
+      icon: 'bi-envelope',
+      placeholder: 'you@company.com',
+      autocomplete: 'email',
+      required: true,
+    }) %>
+
+    <%- include('../partials/form-password', {
+      name: 'password',
+      label: 'Password',
+      placeholder: 'Enter your password',
+      autocomplete: 'current-password',
+      required: true,
+    }) %>
+
+    <div class="ss-auth__row">
+      <label class="ss-checkbox" for="rememberMe">
+        <input
+          class="ss-checkbox__input"
+          id="rememberMe"
+          name="rememberMe"
+          type="checkbox"
+          value="1"
+        />
+        <span>Remember me</span>
+      </label>
+
+      <a href="/forgot-password">Forgot password?</a>
+    </div>
+
+    <button type="submit" class="ss-btn ss-btn--primary ss-btn--md ss-btn--block" data-submit-button>
+      <span data-submit-label>Sign in</span>
+    </button>
+  </form>
+
+  <p class="ss-auth__footer">
+    Don&apos;t have an account? <a href="/register">Create one</a>
+  </p>
+</section>

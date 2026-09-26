@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <%- include('../partials/head') %>
+  <body class="ss-error-body">
+    <main class="ss-error">
+      <span class="ss-error__code">429</span>
+      <h1 class="ss-error__title">Too many requests</h1>
+      <p class="ss-error__text"><%= message %></p>
+
+      <div class="d-flex justify-content-center gap-2 flex-wrap">
+        <a class="ss-btn ss-btn--primary ss-btn--md" href="/login">
+          <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+          Back to sign in
+        </a>
+      </div>
+    </main>
+  </body>
+</html>

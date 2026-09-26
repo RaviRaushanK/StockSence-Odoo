@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <%- include('../partials/head') %>
+  <body class="<%= bodyClass %>">
+    <div class="ss-shell">
+      <%- include('../partials/sidebar') %>
+
+      <button
+        type="button"
+        class="ss-backdrop"
+        aria-label="Close navigation menu"
+        hidden
+        data-sidebar-backdrop
+      ></button>
+
+      <div class="ss-main">
+        <%- include('../partials/navbar') %>
+
+        <main class="ss-content">
+          <%- include('../partials/flash-message') %>
+          <%- body %>
+          <%- include('../partials/footer') %>
+        </main>
+      </div>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <% (pageScripts || []).forEach(function (src) { %>
+      <script src="<%= src %>"></script>
+    <% }); %>
+  </body>
+</html>

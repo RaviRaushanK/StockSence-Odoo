@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <%- include('../partials/head') %>
+  <body class="ss-auth-body">
+    <div class="ss-auth">
+      <aside class="ss-auth__aside">
+        <div class="ss-auth__brand">
+          <%- include('../partials/brand') %>
+        </div>
+
+        <div>
+          <h2 class="ss-auth__headline">Smart inventory management, finally organised.</h2>
+          <p class="ss-auth__lead">
+            <%= appName %> replaces manual registers and spreadsheets with a single, auditable
+            system for every stock movement.
+          </p>
+
+          <ul class="ss-auth__features">
+            <% authHighlights.forEach(function (item) { %>
+              <li class="ss-auth__feature">
+                <i class="bi <%= item.icon %>" aria-hidden="true"></i>
+                <span><%= item.text %></span>
+              </li>
+            <% }); %>
+          </ul>
+        </div>
+
+        <p class="ss-auth__foot"><%= appName %> v<%= appVersion %> &middot; Foundation phase</p>
+      </aside>
+
+      <main class="ss-auth__main">
+        <div class="ss-auth__panel">
+          <div class="ss-auth__mobile-brand d-lg-none">
+            <%- include('../partials/brand') %>
+          </div>
+
+          <%- body %>
+        </div>
+      </main>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/auth.js"></script>
+  </body>
+</html>

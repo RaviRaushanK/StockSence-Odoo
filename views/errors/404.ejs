@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <%- include('../partials/head') %>
+  <body class="ss-error-body">
+    <main class="ss-error">
+      <span class="ss-error__code">404</span>
+      <h1 class="ss-error__title">Page not found</h1>
+      <p class="ss-error__text">
+        The page you are looking for does not exist or has been moved.
+      </p>
+
+      <div class="d-flex justify-content-center gap-2 flex-wrap">
+        <a class="ss-btn ss-btn--primary ss-btn--md" href="/dashboard">
+          <i class="bi bi-speedometer2" aria-hidden="true"></i>
+          Go to dashboard
+        </a>
+        <a class="ss-btn ss-btn--secondary ss-btn--md" href="/login">
+          <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+          Sign in
+        </a>
+      </div>
+    </main>
+  </body>
+</html>

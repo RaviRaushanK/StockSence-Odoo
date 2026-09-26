@@ -1,0 +1,71 @@
+<section class="ss-card ss-auth__card">
+  <div class="ss-auth__header">
+    <h1 class="ss-auth__title">Verify your email</h1>
+    <p class="ss-auth__subtitle">
+      <% if (values.email) { %>
+        Enter the 6-digit code sent to <strong><%= values.email %></strong>.
+      <% } else { %>
+        Enter the 6-digit code we emailed you.
+      <% } %>
+    </p>
+  </div>
+
+  <%- include('../partials/flash-message') %>
+
+  <form class="ss-form" method="post" action="/verify-otp" novalidate>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    <input type="hidden" name="email" value="<%= values.email || '' %>" />
+
+    <div class="ss-field">
+      <span class="ss-field__label" id="otp-label">OTP</span>
+
+      <div class="ss-otp" role="group" aria-labelledby="otp-label" data-otp-inputs>
+        <% for (let index = 0; index < 6; index += 1) { %>
+          <input
+            class="ss-otp__input <%= errors.otp ? 'ss-otp__input--error' : '' %>"
+            type="text"
+            inputmode="numeric"
+            maxlength="1"
+            autocomplete="one-time-code"
+            aria-label="Digit <%= index + 1 %> of 6"
+            data-otp-digit
+          />
+        <% } %>
+      </div>
+
+      <input type="hidden" name="otp" value="<%= values.otp || '' %>" data-otp-value />
+      <% if (errors.otp) { %>
+        <span class="ss-field__error" role="alert">
+          <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
+          <%= errors.otp %>
+        </span>
+      <% } %>
+    </div>
+
+    <button type="submit" class="ss-btn ss-btn--primary ss-btn--md ss-btn--block" data-submit-button>
+      <span data-submit-label>Verify OTP</span>
+    </button>
+
+    <div class="ss-auth__row">
+      <span class="ss-text-secondary ss-text-sm" data-otp-countdown>
+        Resend available in 60s
+      </span>
+
+      <button
+        type="button"
+        class="ss-btn ss-btn--secondary ss-btn--sm"
+        data-otp-resend
+        disabled
+      >
+        Resend OTP
+      </button>
+    </div>
+  </form>
+
+  <form method="post" action="/forgot-password" class="d-none" data-otp-resend-form>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    <input type="hidden" name="email" value="<%= values.email || '' %>" />
+  </form>
+
+  <p class="ss-auth__footer"><a href="/login">Back to sign in</a></p>
+</section>

@@ -1,0 +1,38 @@
+<%- include('../partials/page-header', {
+  title: 'Welcome back, ' + firstName,
+  subtitle: 'Your ' + appName + ' workspace is ready. Inventory data appears here once the stock modules are implemented.',
+  badge: {
+    tone: isActive ? 'success' : 'danger',
+    label: isActive ? 'Active account' : 'Inactive account',
+  },
+}) %>
+
+<div class="row g-4">
+  <div class="col-12 col-xl-8">
+    <%- include('../partials/card', {
+      title: 'Inventory overview',
+      subtitle: 'Live stock metrics will render here.',
+      body: include('../partials/empty-state', {
+        icon: 'bi-clipboard-data',
+        title: 'No inventory data yet',
+        description: 'Stock totals, low-stock alerts and warehouse balances appear here once products, receipts and deliveries are implemented. Nothing is shown in the meantime to avoid displaying placeholder figures.',
+      }),
+    }) %>
+  </div>
+
+  <div class="col-12 col-xl-4">
+    <%- include('../partials/card', {
+      title: 'Foundation checklist',
+      subtitle: 'Phase 1 delivery status.',
+      body: include('../partials/foundation-checklist'),
+    }) %>
+  </div>
+
+  <div class="col-12">
+    <%- include('../partials/card', {
+      title: 'Planned modules',
+      subtitle: 'Each area below becomes active as its phase is delivered.',
+      body: include('../partials/planned-modules', { modules: plannedModules }),
+    }) %>
+  </div>
+</div>

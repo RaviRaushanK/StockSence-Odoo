@@ -1,0 +1,71 @@
+<section class="ss-card ss-auth__card">
+  <div class="ss-auth__header">
+    <h1 class="ss-auth__title">Create your account</h1>
+    <p class="ss-auth__subtitle">Set up your <%= appName %> workspace in less than a minute.</p>
+  </div>
+
+  <%- include('../partials/flash-message') %>
+
+  <form class="ss-form" method="post" action="/register" novalidate>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+    <%- include('../partials/form-field', {
+      name: 'fullName',
+      label: 'Full name',
+      type: 'text',
+      icon: 'bi-person',
+      placeholder: 'Jane Doe',
+      autocomplete: 'name',
+      required: true,
+    }) %>
+
+    <%- include('../partials/form-field', {
+      name: 'email',
+      label: 'Email address',
+      type: 'email',
+      icon: 'bi-envelope',
+      placeholder: 'you@company.com',
+      autocomplete: 'email',
+      required: true,
+    }) %>
+
+    <%- include('../partials/form-password', {
+      name: 'password',
+      label: 'Password',
+      placeholder: 'Create a password',
+      autocomplete: 'new-password',
+      required: true,
+    }) %>
+
+    <ul class="ss-password-rules" data-password-rules="password">
+      <li data-rule="length">
+        <i class="bi bi-circle" aria-hidden="true"></i>
+        <span>At least 8 characters</span>
+      </li>
+      <li data-rule="letter">
+        <i class="bi bi-circle" aria-hidden="true"></i>
+        <span>At least one letter</span>
+      </li>
+      <li data-rule="number">
+        <i class="bi bi-circle" aria-hidden="true"></i>
+        <span>At least one number</span>
+      </li>
+    </ul>
+
+    <%- include('../partials/form-password', {
+      name: 'confirmPassword',
+      label: 'Confirm password',
+      placeholder: 'Re-enter your password',
+      autocomplete: 'new-password',
+      required: true,
+    }) %>
+
+    <button type="submit" class="ss-btn ss-btn--primary ss-btn--md ss-btn--block" data-submit-button>
+      <span data-submit-label>Create account</span>
+    </button>
+  </form>
+
+  <p class="ss-auth__footer">
+    Already have an account? <a href="/login">Sign in</a>
+  </p>
+</section>

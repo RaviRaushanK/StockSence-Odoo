@@ -1,0 +1,27 @@
+<aside class="ss-sidebar" id="ss-sidebar" aria-label="Main navigation" data-sidebar>
+  <div class="ss-sidebar__brand">
+    <%- include('brand') %>
+  </div>
+
+  <nav class="ss-sidebar__nav">
+    <% navSections.forEach(function (section) { %>
+      <div class="ss-sidebar__section">
+        <p class="ss-sidebar__section-title"><%= section.title %></p>
+        <% section.items.forEach(function (item) { %>
+          <a
+            href="<%= item.path %>"
+            class="ss-sidebar__link <%= currentPath === item.path ? 'ss-sidebar__link--active' : '' %>"
+            <%= currentPath === item.path ? 'aria-current="page"' : '' %>
+          >
+            <i class="bi <%= item.icon %>" aria-hidden="true"></i>
+            <span><%= item.label %></span>
+          </a>
+        <% }); %>
+      </div>
+    <% }); %>
+  </nav>
+
+  <div class="ss-sidebar__footer">
+    <%= appName %> v<%= appVersion %> &middot; Foundation phase
+  </div>
+</aside>

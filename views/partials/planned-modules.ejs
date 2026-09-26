@@ -1,0 +1,13 @@
+<div class="ss-module-grid">
+  <% modules.forEach(function (module) { %>
+    <div class="ss-card ss-card--interactive">
+      <div class="ss-card__body">
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <i class="bi <%= module.icon %> text-primary" aria-hidden="true"></i>
+          <h3 class="ss-card__title ss-module-grid__title"><%= module.title %></h3>
+        </div>
+        <p class="ss-text-secondary ss-text-sm mb-0"><%= module.description %></p>
+      </div>
+    </div>
+  <% }); %>
+</div>
