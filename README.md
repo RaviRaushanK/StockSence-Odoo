@@ -1,0 +1,2 @@
+# StockSence-Odoo
+#Hi there!
