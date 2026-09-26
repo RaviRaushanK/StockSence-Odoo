@@ -1,0 +1,129 @@
+<%- include('../partials/page-header', {
+  title: 'Categories',
+  subtitle: 'Organise products into logical categories for cataloguing and reporting.'
+}) %>
+
+<div class="ss-card">
+  <div class="ss-toolbar">
+    <form class="ss-toolbar__filters" method="get" action="/categories" data-filter-form>
+      <div class="ss-toolbar__search">
+        <i class="bi bi-search ss-toolbar__search-icon" aria-hidden="true"></i>
+        <input
+          type="search"
+          name="search"
+          class="ss-input"
+          placeholder="Search categories..."
+          value="<%= filters.search || '' %>"
+        />
+      </div>
+
+      <select name="status" class="ss-select" data-auto-submit>
+        <option value="">All statuses</option>
+        <option value="active" <%= filters.status === 'active' ? 'selected' : '' %>>Active</option>
+        <option value="inactive" <%= filters.status === 'inactive' ? 'selected' : '' %>>Inactive</option>
+      </select>
+
+      <% if (filters.search || filters.status) { %>
+        <a href="/categories" class="ss-btn ss-btn--secondary ss-btn--sm">Clear</a>
+      <% } %>
+    </form>
+
+    <div class="d-flex gap-2">
+      <a href="/products" class="ss-btn ss-btn--secondary ss-btn--sm">
+        <i class="bi bi-box-seam" aria-hidden="true"></i>
+        Products
+      </a>
+      <a href="/categories/create" class="ss-btn ss-btn--primary ss-btn--sm">
+        <i class="bi bi-plus-lg" aria-hidden="true"></i>
+        Add Category
+      </a>
+    </div>
+  </div>
+
+  <% if (categories && categories.length > 0) { %>
+    <div class="ss-table-wrapper">
+      <table class="ss-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th class="text-center">Products</th>
+            <th>Status</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% categories.forEach(function(cat) { %>
+            <tr>
+              <td><span class="fw-semibold"><%= cat.name %></span></td>
+              <td class="text-secondary text-truncate" style="max-width: 320px;">
+                <%= cat.description || '—' %>
+              </td>
+              <td class="text-center">
+                <span class="ss-badge ss-badge--neutral"><%= cat.productCount %></span>
+              </td>
+              <td>
+                <span class="ss-badge <%= cat.isActive ? 'ss-badge--success' : 'ss-badge--neutral' %>">
+                  <%= cat.isActive ? 'Active' : 'Inactive' %>
+                </span>
+              </td>
+              <td>
+                <div class="ss-actions-cell justify-content-end">
+                  <a href="/categories/<%= cat.id %>/edit" class="ss-btn ss-btn--secondary ss-btn--sm">
+                    <i class="bi bi-pencil" aria-hidden="true"></i> Edit
+                  </a>
+                  <form method="post" action="/categories/<%= cat.id %>/toggle-status" class="d-inline">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                    <button type="submit" class="ss-btn ss-btn--secondary ss-btn--sm">
+                      <i class="bi <%= cat.isActive ? 'bi-pause-circle' : 'bi-play-circle' %>" aria-hidden="true"></i>
+                      <%= cat.isActive ? 'Deactivate' : 'Activate' %>
+                    </button>
+                  </form>
+                  <% if (cat.productCount === 0) { %>
+                    <form method="post" action="/categories/<%= cat.id %>/delete" class="d-inline">
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                      <button type="submit" class="ss-btn ss-btn--danger ss-btn--sm" data-confirm="Delete category '<%= cat.name %>'?">
+                        <i class="bi bi-trash" aria-hidden="true"></i>
+                      </button>
+                    </form>
+                  <% } %>
+                </div>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+
+    <% if (pagination.totalPages > 1) { %>
+      <div class="ss-pagination">
+        <span>Showing page <%= pagination.page %> of <%= pagination.totalPages %> (<%= pagination.total %> total)</span>
+        <div class="d-flex gap-2">
+          <% if (pagination.hasPrev) { %>
+            <a href="?page=<%= pagination.page - 1 %>&search=<%= encodeURIComponent(filters.search || '') %>&status=<%= filters.status || '' %>" class="ss-btn ss-btn--secondary ss-btn--sm">Previous</a>
+          <% } %>
+          <% if (pagination.hasNext) { %>
+            <a href="?page=<%= pagination.page + 1 %>&search=<%= encodeURIComponent(filters.search || '') %>&status=<%= filters.status || '' %>" class="ss-btn ss-btn--secondary ss-btn--sm">Next</a>
+          <% } %>
+        </div>
+      </div>
+    <% } %>
+  <% } else { %>
+    <div class="p-4">
+      <%- include('../partials/empty-state', {
+        icon: 'bi-tags',
+        title: filters.search || filters.status ? 'No matching categories' : 'No categories found',
+        description: filters.search || filters.status
+          ? 'Try adjusting your search or filter terms.'
+          : 'Create your first category to start organising products in your catalogue.'
+      }) %>
+      <% if (!filters.search && !filters.status) { %>
+        <div class="text-center mt-3">
+          <a href="/categories/create" class="ss-btn ss-btn--primary ss-btn--sm">
+            <i class="bi bi-plus-lg" aria-hidden="true"></i> Add Category
+          </a>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+</div>

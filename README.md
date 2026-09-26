@@ -256,11 +256,18 @@ an explanatory message. No OTP is ever faked or silently accepted.
 - Vanilla JS for the sidebar, dropdown, password visibility, OTP entry and submit loading states —
   the app remains fully usable with JavaScript disabled.
 
-## 11. Planned for future phases
+## 11. Implemented features (Phase 2: Master Data)
 
-- Product catalogue, categories, units of measure, SKUs and reorder thresholds.
+- **Category Master Data**: Create, edit, search, active/inactive filtering, toggle status, and delete (restricted if products exist).
+- **Product Master Data**: Complete catalogue with unique SKU normalization, category assignment, unit of measure, reorder levels, reorder quantities, search by name/SKU, category filtering, and status toggle.
+- **Warehouse Master Data**: Facility registration with unique uppercase code normalization, address, description, active/inactive filtering, dynamic location count, and delete restriction if locations exist.
+- **Location Master Data**: Storage zone/rack/bin management belonging to parent warehouses with scoped unique location codes, description, active/inactive filtering, and status toggle.
+- Responsive server-rendered table UI with search toolbars, filter dropdowns, pagination, and empty states.
+
+## 12. Planned for future phases
+
 - Goods receipts, delivery orders, internal transfers, inventory adjustments and move history.
-- Multi-warehouse management, locations and an immutable stock ledger.
+- Multi-warehouse stock tracking and an immutable stock ledger.
 - Dashboard analytics built on real query data.
 - OTP password reset once SMTP credentials are available, plus password change for signed-in users.
 - Role-based permissions separating Inventory Manager and Warehouse Staff capabilities.
@@ -270,7 +277,7 @@ See [`docs/roadmap.md`](docs/roadmap.md) for the phase breakdown.
 
 ---
 
-## 12. Documentation
+## 13. Documentation
 
 - [`docs/architecture.md`](docs/architecture.md) — MVC layering, request flow, auth and CSRF design
 - [`docs/api.md`](docs/api.md) — route reference, form contracts and status codes

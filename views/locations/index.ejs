@@ -1,0 +1,123 @@
+<%- include('../partials/page-header', {
+  title: 'Locations: ' + warehouse.name,
+  subtitle: 'Internal storage bins, aisles, racks and zones within ' + warehouse.name + ' (' + warehouse.code + ').'
+}) %>
+
+<div class="ss-card">
+  <div class="ss-toolbar">
+    <form class="ss-toolbar__filters" method="get" action="/warehouses/<%= warehouse.id %>/locations" data-filter-form>
+      <div class="ss-toolbar__search">
+        <i class="bi bi-search ss-toolbar__search-icon" aria-hidden="true"></i>
+        <input
+          type="search"
+          name="search"
+          class="ss-input"
+          placeholder="Search by name or code..."
+          value="<%= filters.search || '' %>"
+        />
+      </div>
+
+      <select name="status" class="ss-select" data-auto-submit>
+        <option value="">All statuses</option>
+        <option value="active" <%= filters.status === 'active' ? 'selected' : '' %>>Active</option>
+        <option value="inactive" <%= filters.status === 'inactive' ? 'selected' : '' %>>Inactive</option>
+      </select>
+
+      <% if (filters.search || filters.status) { %>
+        <a href="/warehouses/<%= warehouse.id %>/locations" class="ss-btn ss-btn--secondary ss-btn--sm">Clear</a>
+      <% } %>
+    </form>
+
+    <div class="d-flex gap-2">
+      <a href="/warehouses" class="ss-btn ss-btn--secondary ss-btn--sm">
+        <i class="bi bi-arrow-left" aria-hidden="true"></i> Warehouses
+      </a>
+      <a href="/warehouses/<%= warehouse.id %>/locations/create" class="ss-btn ss-btn--primary ss-btn--sm">
+        <i class="bi bi-plus-lg" aria-hidden="true"></i> Add Location
+      </a>
+    </div>
+  </div>
+
+  <% if (locations && locations.length > 0) { %>
+    <div class="ss-table-wrapper">
+      <table class="ss-table">
+        <thead>
+          <tr>
+            <th>Location Name</th>
+            <th>Location Code</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% locations.forEach(function(loc) { %>
+            <tr>
+              <td><span class="fw-semibold"><%= loc.name %></span></td>
+              <td><code><%= loc.code %></code></td>
+              <td class="text-secondary text-truncate" style="max-width: 280px;">
+                <%= loc.description || '—' %>
+              </td>
+              <td>
+                <span class="ss-badge <%= loc.isActive ? 'ss-badge--success' : 'ss-badge--neutral' %>">
+                  <%= loc.isActive ? 'Active' : 'Inactive' %>
+                </span>
+              </td>
+              <td>
+                <div class="ss-actions-cell justify-content-end">
+                  <a href="/warehouses/<%= warehouse.id %>/locations/<%= loc.id %>/edit" class="ss-btn ss-btn--secondary ss-btn--sm">
+                    <i class="bi bi-pencil" aria-hidden="true"></i> Edit
+                  </a>
+                  <form method="post" action="/warehouses/<%= warehouse.id %>/locations/<%= loc.id %>/toggle-status" class="d-inline">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                    <button type="submit" class="ss-btn ss-btn--secondary ss-btn--sm">
+                      <i class="bi <%= loc.isActive ? 'bi-pause-circle' : 'bi-play-circle' %>" aria-hidden="true"></i>
+                      <%= loc.isActive ? 'Deactivate' : 'Activate' %>
+                    </button>
+                  </form>
+                  <form method="post" action="/warehouses/<%= warehouse.id %>/locations/<%= loc.id %>/delete" class="d-inline">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                    <button type="submit" class="ss-btn ss-btn--danger ss-btn--sm" data-confirm="Delete location '<%= loc.name %>'?">
+                      <i class="bi bi-trash" aria-hidden="true"></i>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+
+    <% if (pagination.totalPages > 1) { %>
+      <div class="ss-pagination">
+        <span>Showing page <%= pagination.page %> of <%= pagination.totalPages %> (<%= pagination.total %> total)</span>
+        <div class="d-flex gap-2">
+          <% if (pagination.hasPrev) { %>
+            <a href="?page=<%= pagination.page - 1 %>&search=<%= encodeURIComponent(filters.search || '') %>&status=<%= filters.status || '' %>" class="ss-btn ss-btn--secondary ss-btn--sm">Previous</a>
+          <% } %>
+          <% if (pagination.hasNext) { %>
+            <a href="?page=<%= pagination.page + 1 %>&search=<%= encodeURIComponent(filters.search || '') %>&status=<%= filters.status || '' %>" class="ss-btn ss-btn--secondary ss-btn--sm">Next</a>
+          <% } %>
+        </div>
+      </div>
+    <% } %>
+  <% } else { %>
+    <div class="p-4">
+      <%- include('../partials/empty-state', {
+        icon: 'bi-geo-alt',
+        title: filters.search || filters.status ? 'No matching locations' : 'No locations configured',
+        description: filters.search || filters.status
+          ? 'Try adjusting your search or filter terms.'
+          : 'Define specific bins, shelves, aisles or zones within ' + warehouse.name + '.'
+      }) %>
+      <% if (!filters.search && !filters.status) { %>
+        <div class="text-center mt-3">
+          <a href="/warehouses/<%= warehouse.id %>/locations/create" class="ss-btn ss-btn--primary ss-btn--sm">
+            <i class="bi bi-plus-lg" aria-hidden="true"></i> Add Location
+          </a>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+</div>

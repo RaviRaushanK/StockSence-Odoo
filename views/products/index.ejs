@@ -1,9 +1,70 @@
-<%- include('../partials/page-header', { title: title }) %>
-
-<%- include('../partials/card', {
-  body: include('../partials/empty-state', {
-    icon: 'bi-cone-striped',
-    title: placeholder.title + ' is not available yet',
-    description: placeholder.description,
-  }),
+<%- include('../partials/page-header', {
+  title: 'Products',
+  subtitle: 'Manage products, SKUs and replenishment thresholds.'
 }) %>
+
+<div class="ss-card">
+  <div class="ss-toolbar">
+    <form class="ss-toolbar__filters" method="get" action="/products" data-filter-form>
+      <div class="ss-toolbar__search">
+        <i class="bi bi-search ss-toolbar__search-icon" aria-hidden="true"></i>
+        <input
+          type="search"
+          name="search"
+          class="ss-input"
+          placeholder="Search by name or SKU..."
+          value="<%= filters.search || '' %>"
+        />
+      </div>
+
+      <select name="categoryId" class="ss-select" data-auto-submit>
+        <option value="">All categories</option>
+        <% categories.forEach(function(cat) { %>
+          <option value="<%= cat.id %>" <%= String(filters.categoryId) === String(cat.id) ? 'selected' : '' %>>
+            <%= cat.name %>
+          </option>
+        <% }); %>
+      </select>
+
+      <select name="status" class="ss-select" data-auto-submit>
+        <option value="">All statuses</option>
+        <option value="active" <%= filters.status === 'active' ? 'selected' : '' %>>Active</option>
+        <option value="inactive" <%= filters.status === 'inactive' ? 'selected' : '' %>>Inactive</option>
+      </select>
+
+      <% if (filters.search || filters.categoryId || filters.status) { %>
+        <a href="/products" class="ss-btn ss-btn--secondary ss-btn--sm">Clear</a>
+      <% } %>
+    </form>
+
+    <div class="d-flex gap-2">
+      <a href="/categories" class="ss-btn ss-btn--secondary ss-btn--sm">
+        <i class="bi bi-tags" aria-hidden="true"></i> Categories
+      </a>
+      <a href="/products/create" class="ss-btn ss-btn--primary ss-btn--sm">
+        <i class="bi bi-plus-lg" aria-hidden="true"></i> Add Product
+      </a>
+    </div>
+  </div>
+
+  <% if (products && products.length > 0) { %>
+    <%- include('./_table') %>
+  <% } else { %>
+    <div class="p-4">
+      <%- include('../partials/empty-state', {
+        icon: 'bi-box-seam',
+        title: filters.search || filters.categoryId || filters.status ? 'No matching products' : 'No products found',
+        description: filters.search || filters.categoryId || filters.status
+          ? 'Try adjusting your search or filter terms.'
+          : 'Create your first product to start managing inventory.'
+      }) %>
+      <% if (!filters.search && !filters.categoryId && !filters.status) { %>
+        <div class="text-center mt-3">
+          <a href="/products/create" class="ss-btn ss-btn--primary ss-btn--sm">
+            <i class="bi bi-plus-lg" aria-hidden="true"></i> Add Product
+          </a>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+</div>

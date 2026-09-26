@@ -22,19 +22,23 @@
   breadcrumbs, placeholder pages for every planned module, and 404/429/500 pages.
 - Vanilla JS for sidebar, dropdown, password toggle, OTP entry and submit loading states only.
 
-**Explicitly not included:** any inventory data, metrics or charts. Those screens render empty
-states explaining what will appear once the corresponding module ships.
+## Delivered — Phase 2: Product and warehouse master data
 
-## Phase 2 — Product and warehouse master data
-
-- `Product`, `Category`, `Warehouse` and `Location` Sequelize models following the existing pattern.
-- Product list with search, filtering, pagination and CRUD screens, rendered server-side.
-- Unit of measure, SKU management and reorder thresholds.
-- Stock balance per warehouse/location derived from stock movements.
-- Role-based permissions: Inventory Manager versus Warehouse Staff.
-- Dashboard analytics using real query data.
+- `Product`, `Category`, `Warehouse` and `Location` Sequelize models with associations and foreign key constraints.
+- Category CRUD, active/inactive toggles, search, and delete protection against products attached.
+- Product CRUD with SKU uppercase normalization, category assignment, unit of measure, reorder thresholds, search, category filter, and status filter.
+- Warehouse CRUD with unique uppercase code normalization, location counts, active/inactive toggles, and delete protection against locations attached.
+- Location CRUD scoped to parent warehouses with unique location codes within warehouse.
+- Server-rendered responsive data tables with pagination, toolbars, and empty states.
+- Double-submit CSRF protection on all state-changing forms and toggles.
 
 ## Phase 3 — Stock movements
+
+- Goods receipts (inbound) with supplier references and posting.
+- Delivery orders (outbound) with picking, packing and dispatch.
+- Internal transfers between warehouses with in-transit tracking.
+- Inventory adjustments with mandatory reason codes and an audit trail.
+- Immutable stock ledger and the searchable move history screen.
 
 - Goods receipts (inbound) with supplier references and posting.
 - Delivery orders (outbound) with picking, packing and dispatch.

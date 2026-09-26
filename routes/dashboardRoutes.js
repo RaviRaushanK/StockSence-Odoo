@@ -6,8 +6,6 @@ const { requireAuth } = require('../middleware/authenticate');
 const router = express.Router();
 
 router.get('/dashboard', requireAuth, dashboardController.index);
-router.get('/products', requireAuth, dashboardController.products);
-router.get('/warehouses', requireAuth, dashboardController.warehouses);
 router.get('/receipts', requireAuth, dashboardController.receipts);
 router.get('/deliveries', requireAuth, dashboardController.deliveries);
 router.get('/transfers', requireAuth, dashboardController.transfers);

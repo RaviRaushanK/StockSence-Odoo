@@ -1,0 +1,80 @@
+<div class="ss-table-wrapper">
+  <table class="ss-table">
+    <thead>
+      <tr>
+        <th>Warehouse Name</th>
+        <th>Code</th>
+        <th>Address</th>
+        <th class="text-center">Locations</th>
+        <th>Status</th>
+        <th class="text-end">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% warehouses.forEach(function(w) { %>
+        <tr>
+          <td>
+            <span class="fw-semibold"><%= w.name %></span>
+            <% if (w.description) { %>
+              <small class="d-block text-secondary text-truncate" style="max-width: 260px;"><%= w.description %></small>
+            <% } %>
+          </td>
+          <td><code><%= w.code %></code></td>
+          <td class="text-secondary text-truncate" style="max-width: 240px;">
+            <%= w.address || '—' %>
+          </td>
+          <td class="text-center">
+            <a href="/warehouses/<%= w.id %>/locations" class="ss-badge ss-badge--neutral text-decoration-none">
+              <i class="bi bi-geo-alt" aria-hidden="true"></i>
+              <%= w.locationCount %> locations
+            </a>
+          </td>
+          <td>
+            <span class="ss-badge <%= w.isActive ? 'ss-badge--success' : 'ss-badge--neutral' %>">
+              <%= w.isActive ? 'Active' : 'Inactive' %>
+            </span>
+          </td>
+          <td>
+            <div class="ss-actions-cell justify-content-end">
+              <a href="/warehouses/<%= w.id %>/locations" class="ss-btn ss-btn--secondary ss-btn--sm" title="View locations">
+                <i class="bi bi-geo-alt" aria-hidden="true"></i> Locations
+              </a>
+              <a href="/warehouses/<%= w.id %>/edit" class="ss-btn ss-btn--secondary ss-btn--sm" title="Edit warehouse">
+                <i class="bi bi-pencil" aria-hidden="true"></i> Edit
+              </a>
+              <form method="post" action="/warehouses/<%= w.id %>/toggle-status" class="d-inline">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                <button type="submit" class="ss-btn ss-btn--secondary ss-btn--sm">
+                  <i class="bi <%= w.isActive ? 'bi-pause-circle' : 'bi-play-circle' %>" aria-hidden="true"></i>
+                  <%= w.isActive ? 'Deactivate' : 'Activate' %>
+                </button>
+              </form>
+              <% if (w.locationCount === 0) { %>
+                <form method="post" action="/warehouses/<%= w.id %>/delete" class="d-inline">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                  <button type="submit" class="ss-btn ss-btn--danger ss-btn--sm" data-confirm="Delete warehouse '<%= w.name %>'?">
+                    <i class="bi bi-trash" aria-hidden="true"></i>
+                  </button>
+                </form>
+              <% } %>
+            </div>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+
+<% if (pagination.totalPages > 1) { %>
+  <div class="ss-pagination">
+    <span>Showing page <%= pagination.page %> of <%= pagination.totalPages %> (<%= pagination.total %> total)</span>
+    <div class="d-flex gap-2">
+      <% if (pagination.hasPrev) { %>
+        <a href="?page=<%= pagination.page - 1 %>&search=<%= encodeURIComponent(filters.search || '') %>&status=<%= filters.status || '' %>" class="ss-btn ss-btn--secondary ss-btn--sm">Previous</a>
+      <% } %>
+      <% if (pagination.hasNext) { %>
+        <a href="?page=<%= pagination.page + 1 %>&search=<%= encodeURIComponent(filters.search || '') %>&status=<%= filters.status || '' %>" class="ss-btn ss-btn--secondary ss-btn--sm">Next</a>
+      <% } %>
+    </div>
+  </div>
+<% } %>

@@ -1,9 +1,58 @@
-<%- include('../partials/page-header', { title: title }) %>
-
-<%- include('../partials/card', {
-  body: include('../partials/empty-state', {
-    icon: 'bi-cone-striped',
-    title: placeholder.title + ' is not available yet',
-    description: placeholder.description,
-  }),
+<%- include('../partials/page-header', {
+  title: 'Warehouses',
+  subtitle: 'Manage storage facilities and physical distribution centres.'
 }) %>
+
+<div class="ss-card">
+  <div class="ss-toolbar">
+    <form class="ss-toolbar__filters" method="get" action="/warehouses" data-filter-form>
+      <div class="ss-toolbar__search">
+        <i class="bi bi-search ss-toolbar__search-icon" aria-hidden="true"></i>
+        <input
+          type="search"
+          name="search"
+          class="ss-input"
+          placeholder="Search by name or code..."
+          value="<%= filters.search || '' %>"
+        />
+      </div>
+
+      <select name="status" class="ss-select" data-auto-submit>
+        <option value="">All statuses</option>
+        <option value="active" <%= filters.status === 'active' ? 'selected' : '' %>>Active</option>
+        <option value="inactive" <%= filters.status === 'inactive' ? 'selected' : '' %>>Inactive</option>
+      </select>
+
+      <% if (filters.search || filters.status) { %>
+        <a href="/warehouses" class="ss-btn ss-btn--secondary ss-btn--sm">Clear</a>
+      <% } %>
+    </form>
+
+    <div>
+      <a href="/warehouses/create" class="ss-btn ss-btn--primary ss-btn--sm">
+        <i class="bi bi-plus-lg" aria-hidden="true"></i> Add Warehouse
+      </a>
+    </div>
+  </div>
+
+  <% if (warehouses && warehouses.length > 0) { %>
+    <%- include('./_table') %>
+  <% } else { %>
+    <div class="p-4">
+      <%- include('../partials/empty-state', {
+        icon: 'bi-buildings',
+        title: filters.search || filters.status ? 'No matching warehouses' : 'No warehouses found',
+        description: filters.search || filters.status
+          ? 'Try adjusting your search or filter terms.'
+          : 'Create your first warehouse to begin tracking storage locations and stock.'
+      }) %>
+      <% if (!filters.search && !filters.status) { %>
+        <div class="text-center mt-3">
+          <a href="/warehouses/create" class="ss-btn ss-btn--primary ss-btn--sm">
+            <i class="bi bi-plus-lg" aria-hidden="true"></i> Add Warehouse
+          </a>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+</div>

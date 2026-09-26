@@ -176,8 +176,15 @@ support, rather than as placeholders.
 | `createdAt` / `updatedAt` | `TIMESTAMP` | Managed by Sequelize |
 
 The default scope excludes `password`; only the explicit `withPassword` scope used during credential
-verification includes it. Future inventory models (`Product`, `Warehouse`, `Location`,
-`StockMovement`, …) follow the same pattern and arrive in the next phase.
+verification includes it.
+
+### Master Data models (Phase 2)
+
+- **`Category`**: `id`, `name` (unique), `description`, `isActive`, timestamps. Has many `Product` with `RESTRICT` on delete.
+- **`Product`**: `id`, `name`, `sku` (unique, uppercase), `categoryId` (FK), `unitOfMeasure`, `description`, `reorderLevel`, `reorderQuantity`, `isActive`, timestamps. Belongs to `Category`.
+- **`Warehouse`**: `id`, `name`, `code` (unique, uppercase), `address`, `description`, `isActive`, timestamps. Has many `Location` with `RESTRICT` on delete.
+- **`Location`**: `id`, `warehouseId` (FK), `name`, `code` (uppercase, unique scoped per warehouse), `description`, `isActive`, timestamps. Belongs to `Warehouse`.
+
 
 ## 7. Authentication design
 

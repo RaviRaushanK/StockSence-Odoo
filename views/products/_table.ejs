@@ -1,0 +1,72 @@
+<div class="ss-table-wrapper">
+  <table class="ss-table">
+    <thead>
+      <tr>
+        <th>Product Name</th>
+        <th>SKU</th>
+        <th>Category</th>
+        <th>Unit</th>
+        <th class="text-end">Reorder Level</th>
+        <th class="text-end">Reorder Qty</th>
+        <th>Status</th>
+        <th class="text-end">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% products.forEach(function(p) { %>
+        <tr>
+          <td>
+            <span class="fw-semibold"><%= p.name %></span>
+            <% if (p.description) { %>
+              <small class="d-block text-secondary text-truncate" style="max-width: 240px;"><%= p.description %></small>
+            <% } %>
+          </td>
+          <td><code><%= p.sku %></code></td>
+          <td><span class="ss-badge ss-badge--neutral"><%= p.category ? p.category.name : '—' %></span></td>
+          <td><%= p.unitOfMeasure %></td>
+          <td class="text-end"><%= p.reorderLevel %></td>
+          <td class="text-end"><%= p.reorderQuantity %></td>
+          <td>
+            <span class="ss-badge <%= p.isActive ? 'ss-badge--success' : 'ss-badge--neutral' %>">
+              <%= p.isActive ? 'Active' : 'Inactive' %>
+            </span>
+          </td>
+          <td>
+            <div class="ss-actions-cell justify-content-end">
+              <a href="/products/<%= p.id %>/edit" class="ss-btn ss-btn--secondary ss-btn--sm">
+                <i class="bi bi-pencil" aria-hidden="true"></i> Edit
+              </a>
+              <form method="post" action="/products/<%= p.id %>/toggle-status" class="d-inline">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                <button type="submit" class="ss-btn ss-btn--secondary ss-btn--sm">
+                  <i class="bi <%= p.isActive ? 'bi-pause-circle' : 'bi-play-circle' %>" aria-hidden="true"></i>
+                  <%= p.isActive ? 'Deactivate' : 'Activate' %>
+                </button>
+              </form>
+              <form method="post" action="/products/<%= p.id %>/delete" class="d-inline">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                <button type="submit" class="ss-btn ss-btn--danger ss-btn--sm" data-confirm="Delete product '<%= p.name %>'?">
+                  <i class="bi bi-trash" aria-hidden="true"></i>
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+
+<% if (pagination.totalPages > 1) { %>
+  <div class="ss-pagination">
+    <span>Showing page <%= pagination.page %> of <%= pagination.totalPages %> (<%= pagination.total %> total)</span>
+    <div class="d-flex gap-2">
+      <% if (pagination.hasPrev) { %>
+        <a href="?page=<%= pagination.page - 1 %>&search=<%= encodeURIComponent(filters.search || '') %>&categoryId=<%= filters.categoryId || '' %>&status=<%= filters.status || '' %>" class="ss-btn ss-btn--secondary ss-btn--sm">Previous</a>
+      <% } %>
+      <% if (pagination.hasNext) { %>
+        <a href="?page=<%= pagination.page + 1 %>&search=<%= encodeURIComponent(filters.search || '') %>&categoryId=<%= filters.categoryId || '' %>&status=<%= filters.status || '' %>" class="ss-btn ss-btn--secondary ss-btn--sm">Next</a>
+      <% } %>
+    </div>
+  </div>
+<% } %>

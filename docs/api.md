@@ -39,8 +39,34 @@ clients that do not accept HTML; browsers get the EJS error pages instead.
 | GET | `/reset-password` | `authController.showResetPassword` | `auth/reset-password` | Guests only |
 | POST | `/reset-password` | `authController.resetPassword` | — (redirect) | Public |
 | GET | `/dashboard` | `dashboardController.index` | `dashboard/index` | Protected |
-| GET | `/products` | `dashboardController.products` | `products/index` | Protected |
-| GET | `/warehouses` | `dashboardController.warehouses` | `warehouses/index` | Protected |
+| GET | `/categories` | `categoryController.list` | `categories/index` | Protected |
+| GET | `/categories/create` | `categoryController.showCreate` | `categories/create` | Protected |
+| POST | `/categories/create` | `categoryController.create` | — (redirect) | Protected |
+| GET | `/categories/:id/edit` | `categoryController.showEdit` | `categories/edit` | Protected |
+| POST | `/categories/:id/edit` | `categoryController.update` | — (redirect) | Protected |
+| POST | `/categories/:id/toggle-status` | `categoryController.toggleStatus` | — (redirect) | Protected |
+| POST | `/categories/:id/delete` | `categoryController.delete` | — (redirect) | Protected |
+| GET | `/products` | `productController.list` | `products/index` | Protected |
+| GET | `/products/create` | `productController.showCreate` | `products/create` | Protected |
+| POST | `/products/create` | `productController.create` | — (redirect) | Protected |
+| GET | `/products/:id/edit` | `productController.showEdit` | `products/edit` | Protected |
+| POST | `/products/:id/edit` | `productController.update` | — (redirect) | Protected |
+| POST | `/products/:id/toggle-status` | `productController.toggleStatus` | — (redirect) | Protected |
+| POST | `/products/:id/delete` | `productController.delete` | — (redirect) | Protected |
+| GET | `/warehouses` | `warehouseController.list` | `warehouses/index` | Protected |
+| GET | `/warehouses/create` | `warehouseController.showCreate` | `warehouses/create` | Protected |
+| POST | `/warehouses/create` | `warehouseController.create` | — (redirect) | Protected |
+| GET | `/warehouses/:id/edit` | `warehouseController.showEdit` | `warehouses/edit` | Protected |
+| POST | `/warehouses/:id/edit` | `warehouseController.update` | — (redirect) | Protected |
+| POST | `/warehouses/:id/toggle-status` | `warehouseController.toggleStatus` | — (redirect) | Protected |
+| POST | `/warehouses/:id/delete` | `warehouseController.delete` | — (redirect) | Protected |
+| GET | `/warehouses/:warehouseId/locations` | `locationController.list` | `locations/index` | Protected |
+| GET | `/warehouses/:warehouseId/locations/create` | `locationController.showCreate` | `locations/create` | Protected |
+| POST | `/warehouses/:warehouseId/locations/create` | `locationController.create` | — (redirect) | Protected |
+| GET | `/warehouses/:warehouseId/locations/:id/edit` | `locationController.showEdit` | `locations/edit` | Protected |
+| POST | `/warehouses/:warehouseId/locations/:id/edit` | `locationController.update` | — (redirect) | Protected |
+| POST | `/warehouses/:warehouseId/locations/:id/toggle-status` | `locationController.toggleStatus` | — (redirect) | Protected |
+| POST | `/warehouses/:warehouseId/locations/:id/delete` | `locationController.delete` | — (redirect) | Protected |
 | GET | `/receipts` | `dashboardController.receipts` | `operations/receipts` | Protected |
 | GET | `/deliveries` | `dashboardController.deliveries` | `operations/deliveries` | Protected |
 | GET | `/transfers` | `dashboardController.transfers` | `operations/transfers` | Protected |

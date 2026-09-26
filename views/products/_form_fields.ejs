@@ -1,0 +1,65 @@
+<div class="row g-3">
+  <div class="col-12 col-md-8">
+    <div class="ss-field">
+      <label class="ss-field__label" for="name">Product Name<span class="ss-field__required">*</span></label>
+      <input type="text" id="name" name="name" class="ss-input <%= errors.name ? 'ss-input--error' : '' %>" placeholder="e.g. Acoustic Foam Panel" value="<%= values.name || '' %>" required />
+      <% if (errors.name) { %><span class="ss-field__error"><i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i> <%= errors.name %></span><% } %>
+    </div>
+  </div>
+  <div class="col-12 col-md-4">
+    <div class="ss-field">
+      <label class="ss-field__label" for="sku">SKU<span class="ss-field__required">*</span></label>
+      <input type="text" id="sku" name="sku" class="ss-input <%= errors.sku ? 'ss-input--error' : '' %>" placeholder="e.g. AFP-BLK-50" value="<%= values.sku || '' %>" required />
+      <% if (errors.sku) { %><span class="ss-field__error"><i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i> <%= errors.sku %></span><% } %>
+    </div>
+  </div>
+  <div class="col-12 col-md-6">
+    <div class="ss-field">
+      <label class="ss-field__label" for="categoryId">Category<span class="ss-field__required">*</span></label>
+      <select id="categoryId" name="categoryId" class="ss-select w-100 <%= errors.categoryId ? 'ss-input--error' : '' %>" style="height: var(--ss-control-height);" required>
+        <option value="">Select a category</option>
+        <% categories.forEach(function(cat) { %>
+          <option value="<%= cat.id %>" <%= String(values.categoryId) === String(cat.id) ? 'selected' : '' %>><%= cat.name %></option>
+        <% }); %>
+      </select>
+      <% if (errors.categoryId) { %><span class="ss-field__error"><i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i> <%= errors.categoryId %></span><% } %>
+    </div>
+  </div>
+  <div class="col-12 col-md-6">
+    <div class="ss-field">
+      <label class="ss-field__label" for="unitOfMeasure">Unit of Measure<span class="ss-field__required">*</span></label>
+      <input type="text" id="unitOfMeasure" name="unitOfMeasure" class="ss-input <%= errors.unitOfMeasure ? 'ss-input--error' : '' %>" placeholder="e.g. Units, kg, Box" value="<%= values.unitOfMeasure || '' %>" required />
+      <% if (errors.unitOfMeasure) { %><span class="ss-field__error"><i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i> <%= errors.unitOfMeasure %></span><% } %>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="ss-field">
+      <label class="ss-field__label" for="description">Description</label>
+      <textarea id="description" name="description" class="ss-textarea" rows="3"><%= values.description || '' %></textarea>
+    </div>
+  </div>
+  <div class="col-12 col-md-6">
+    <div class="ss-field">
+      <label class="ss-field__label" for="reorderLevel">Reorder Level</label>
+      <input type="number" id="reorderLevel" name="reorderLevel" min="0" class="ss-input <%= errors.reorderLevel ? 'ss-input--error' : '' %>" value="<%= values.reorderLevel !== undefined ? values.reorderLevel : '0' %>" />
+      <span class="ss-field__hint">Minimum threshold triggering replenishment.</span>
+      <% if (errors.reorderLevel) { %><span class="ss-field__error"><i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i> <%= errors.reorderLevel %></span><% } %>
+    </div>
+  </div>
+  <div class="col-12 col-md-6">
+    <div class="ss-field">
+      <label class="ss-field__label" for="reorderQuantity">Reorder Quantity</label>
+      <input type="number" id="reorderQuantity" name="reorderQuantity" min="0" class="ss-input <%= errors.reorderQuantity ? 'ss-input--error' : '' %>" value="<%= values.reorderQuantity !== undefined ? values.reorderQuantity : '0' %>" />
+      <span class="ss-field__hint">Batch quantity when ordering.</span>
+      <% if (errors.reorderQuantity) { %><span class="ss-field__error"><i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i> <%= errors.reorderQuantity %></span><% } %>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="ss-field">
+      <label class="ss-checkbox">
+        <input type="checkbox" name="isActive" value="1" class="ss-checkbox__input" <%= values.isActive === false || values.isActive === '0' ? '' : 'checked' %> />
+        <span>Active</span>
+      </label>
+    </div>
+  </div>
+</div>
