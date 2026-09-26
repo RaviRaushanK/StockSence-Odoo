@@ -199,10 +199,10 @@ npm install
 | `npm run lint` | Lint the project |
 
 ```bash
-npm start          # node app.js
-npm run dev        # nodemon app.js
 npm run db:sync    # sequelize.sync()
 npm run lint       # eslint .
+npm start          # node app.js
+npm run dev        # nodemon app.js
 ```
 
 Default URLs:
