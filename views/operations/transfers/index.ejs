@@ -1,0 +1,58 @@
+<%- include('../../partials/page-header', {
+  title: 'Internal Transfers',
+  subtitle: 'Move stock between locations. Source decreases and destination increases atomically.'
+}) %>
+
+<div class="ss-card">
+  <div class="ss-toolbar">
+    <form class="ss-toolbar__filters" method="get" action="/operations/transfers" data-filter-form>
+      <div class="ss-toolbar__search">
+        <i class="bi bi-search ss-toolbar__search-icon" aria-hidden="true"></i>
+        <input type="search" name="search" class="ss-input" placeholder="Search transfer number..." value="<%= filters.search || '' %>" />
+      </div>
+      <select name="status" class="ss-select" data-auto-submit>
+        <option value="">All statuses</option>
+        <% ['DRAFT','WAITING','READY','DONE','CANCELED'].forEach(function(s) { %>
+          <option value="<%= s %>" <%= filters.status === s ? 'selected' : '' %>><%= s %></option>
+        <% }); %>
+      </select>
+      <% if (filters.search || filters.status) { %>
+        <a href="/operations/transfers" class="ss-btn ss-btn--secondary ss-btn--sm">Clear</a>
+      <% } %>
+    </form>
+    <div><a href="/operations/transfers/create" class="ss-btn ss-btn--primary ss-btn--sm"><i class="bi bi-plus-lg" aria-hidden="true"></i> New Transfer</a></div>
+  </div>
+  <% if (transfers && transfers.length > 0) { %>
+    <div class="ss-table-wrapper">
+      <table class="ss-table">
+        <thead><tr><th>Transfer No.</th><th>From</th><th>To</th><th class="text-end">Items</th><th>Status</th><th>Created</th><th class="text-end">Actions</th></tr></thead>
+        <tbody>
+          <% transfers.forEach(function(r) { %>
+            <tr>
+              <td><code><%= r.transferNumber %></code></td>
+              <td><%= r.sourceWarehouse ? r.sourceWarehouse.name : '—' %><small class="d-block text-secondary"><%= r.sourceLocation ? r.sourceLocation.name : '' %></small></td>
+              <td><%= r.destinationWarehouse ? r.destinationWarehouse.name : '—' %><small class="d-block text-secondary"><%= r.destinationLocation ? r.destinationLocation.name : '' %></small></td>
+              <td class="text-end"><%= r.itemCount %></td>
+              <td><span class="ss-badge <%= r.status === 'DONE' ? 'ss-badge--success' : (r.status === 'CANCELED' ? 'ss-badge--neutral' : 'ss-badge--warning') %>"><%= r.status %></span></td>
+              <td><span class="text-nowrap"><%= new Date(r.createdAt).toLocaleDateString() %></span></td>
+              <td><div class="ss-actions-cell justify-content-end"><a href="/operations/transfers/<%= r.id %>" class="ss-btn ss-btn--secondary ss-btn--sm"><i class="bi bi-eye" aria-hidden="true"></i> View</a></div></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+    <% if (pagination.totalPages > 1) { %>
+      <div class="ss-pagination"><span>Page <%= pagination.page %> of <%= pagination.totalPages %> (<%= pagination.total %> total)</span>
+        <div class="d-flex gap-2">
+          <% if (pagination.hasPrev) { %><a href="?page=<%= pagination.page - 1 %>&search=<%= encodeURIComponent(filters.search || '') %>&status=<%= filters.status || '' %>" class="ss-btn ss-btn--secondary ss-btn--sm">Previous</a><% } %>
+          <% if (pagination.hasNext) { %><a href="?page=<%= pagination.page + 1 %>&search=<%= encodeURIComponent(filters.search || '') %>&status=<%= filters.status || '' %>" class="ss-btn ss-btn--secondary ss-btn--sm">Next</a><% } %>
+        </div>
+      </div>
+    <% } %>
+  <% } else { %>
+    <div class="p-4">
+      <%- include('../../partials/empty-state', { icon: 'bi-arrow-left-right', title: (filters.search || filters.status) ? 'No matching transfers' : 'No transfers yet', description: (filters.search || filters.status) ? 'Try adjusting your search or filter.' : 'Create your first internal transfer to move stock between locations.' }) %>
+      <% if (!filters.search && !filters.status) { %><div class="text-center mt-3"><a href="/operations/transfers/create" class="ss-btn ss-btn--primary ss-btn--sm"><i class="bi bi-plus-lg" aria-hidden="true"></i> New Transfer</a></div><% } %>
+    </div>
+  <% } %>
+</div>

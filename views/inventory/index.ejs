@@ -1,0 +1,136 @@
+<%- include('../partials/page-header', {
+  title: 'Stock Overview',
+  subtitle: 'Current physical inventory balances across warehouses and locations.'
+}) %>
+
+<div class="ss-card">
+  <div class="ss-toolbar">
+    <form class="ss-toolbar__filters" method="get" action="/inventory" data-filter-form>
+      <div class="ss-toolbar__search">
+        <i class="bi bi-search ss-toolbar__search-icon" aria-hidden="true"></i>
+        <input
+          type="search"
+          name="search"
+          class="ss-input"
+          placeholder="Search by product or SKU..."
+          value="<%= filters.search || '' %>"
+        />
+      </div>
+
+      <select name="warehouseId" class="ss-select" data-auto-submit>
+        <option value="">All Warehouses</option>
+        <% warehouses.forEach(function(w) { %>
+          <option value="<%= w.id %>" <%= String(filters.warehouseId) === String(w.id) ? 'selected' : '' %>>
+            <%= w.name %> (<%= w.code %>)
+          </option>
+        <% }); %>
+      </select>
+
+      <% if (locations && locations.length > 0) { %>
+        <select name="locationId" class="ss-select" data-auto-submit>
+          <option value="">All Locations</option>
+          <% locations.forEach(function(l) { %>
+            <option value="<%= l.id %>" <%= String(filters.locationId) === String(l.id) ? 'selected' : '' %>>
+              <%= l.name %> (<%= l.code %>)
+            </option>
+          <% }); %>
+        </select>
+      <% } %>
+
+      <select name="stockStatus" class="ss-select" data-auto-submit>
+        <option value="">All Stock Statuses</option>
+        <option value="in_stock" <%= filters.stockStatus === 'in_stock' ? 'selected' : '' %>>In Stock</option>
+        <option value="low_stock" <%= filters.stockStatus === 'low_stock' ? 'selected' : '' %>>Low Stock</option>
+        <option value="out_of_stock" <%= filters.stockStatus === 'out_of_stock' ? 'selected' : '' %>>Out of Stock</option>
+      </select>
+
+      <% if (filters.search || filters.warehouseId || filters.locationId || filters.stockStatus) { %>
+        <a href="/inventory" class="ss-btn ss-btn--secondary ss-btn--sm">Clear</a>
+      <% } %>
+    </form>
+
+    <div class="d-flex gap-2">
+      <a href="/move-history" class="ss-btn ss-btn--secondary ss-btn--sm">
+        <i class="bi bi-clock-history" aria-hidden="true"></i> Move History
+      </a>
+      <a href="/products" class="ss-btn ss-btn--secondary ss-btn--sm">
+        <i class="bi bi-box-seam" aria-hidden="true"></i> Products
+      </a>
+    </div>
+  </div>
+
+  <% if (balances && balances.length > 0) { %>
+    <div class="ss-table-wrapper">
+      <table class="ss-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>SKU</th>
+            <th>Warehouse</th>
+            <th>Location</th>
+            <th class="text-end">Current Quantity</th>
+            <th>Unit</th>
+            <th class="text-end">Reorder Level</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% balances.forEach(function(b) { %>
+            <tr>
+              <td>
+                <span class="fw-semibold"><%= b.product ? b.product.name : 'Unknown Product' %></span>
+              </td>
+              <td><code><%= b.product ? b.product.sku : '—' %></code></td>
+              <td>
+                <%= b.location && b.location.warehouse ? b.location.warehouse.name : '—' %>
+                <% if (b.location && b.location.warehouse) { %>
+                  <small class="text-secondary">(<%= b.location.warehouse.code %>)</small>
+                <% } %>
+              </td>
+              <td>
+                <span class="fw-semibold"><%= b.location ? b.location.name : '—' %></span>
+                <% if (b.location) { %>
+                  <small class="text-secondary">(<%= b.location.code %>)</small>
+                <% } %>
+              </td>
+              <td class="text-end">
+                <span class="fw-bold font-monospace"><%= b.quantity %></span>
+              </td>
+              <td><%= b.product ? b.product.unitOfMeasure : '' %></td>
+              <td class="text-end"><%= b.product ? b.product.reorderLevel : 0 %></td>
+              <td>
+                <span class="ss-badge ss-badge--<%= b.statusTone %>">
+                  <%= b.statusLabel %>
+                </span>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+
+    <% if (pagination.totalPages > 1) { %>
+      <div class="ss-pagination">
+        <span>Showing page <%= pagination.page %> of <%= pagination.totalPages %> (<%= pagination.total %> total)</span>
+        <div class="d-flex gap-2">
+          <% if (pagination.hasPrev) { %>
+            <a href="?page=<%= pagination.page - 1 %>&search=<%= encodeURIComponent(filters.search || '') %>&warehouseId=<%= filters.warehouseId || '' %>&locationId=<%= filters.locationId || '' %>&stockStatus=<%= filters.stockStatus || '' %>" class="ss-btn ss-btn--secondary ss-btn--sm">Previous</a>
+          <% } %>
+          <% if (pagination.hasNext) { %>
+            <a href="?page=<%= pagination.page + 1 %>&search=<%= encodeURIComponent(filters.search || '') %>&warehouseId=<%= filters.warehouseId || '' %>&locationId=<%= filters.locationId || '' %>&stockStatus=<%= filters.stockStatus || '' %>" class="ss-btn ss-btn--secondary ss-btn--sm">Next</a>
+          <% } %>
+        </div>
+      </div>
+    <% } %>
+  <% } else { %>
+    <div class="p-4">
+      <%- include('../partials/empty-state', {
+        icon: 'bi-layers',
+        title: filters.search || filters.warehouseId || filters.locationId || filters.stockStatus ? 'No matching stock records' : 'No inventory records found.',
+        description: filters.search || filters.warehouseId || filters.locationId || filters.stockStatus
+          ? 'Try adjusting your search filters.'
+          : 'Stock balances are established when inventory transactions (receipts, transfers, adjustments) occur.'
+      }) %>
+    </div>
+  <% } %>
+</div>

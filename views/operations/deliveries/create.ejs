@@ -1,0 +1,57 @@
+<%- include('../../partials/page-header', { title: 'New Delivery Order', subtitle: 'Draft only — availability is checked at validation time.' }) %>
+
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-10">
+    <div class="ss-card"><div class="ss-card__body">
+      <% if (errors.form) { %><div class="ss-alert ss-alert--danger mb-4" role="alert"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i><span><%= errors.form %></span></div><% } %>
+      <form class="ss-form" method="post" action="/operations/deliveries/create">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <div class="ss-field"><label class="ss-field__label" for="customerName">Customer<span class="ss-field__required">*</span></label>
+              <input type="text" id="customerName" name="customerName" class="ss-input" value="<%= (values && values.customerName) || '' %>" placeholder="e.g. XYZ Manufacturing" required />
+            </div>
+          </div>
+          <div class="col-12 col-md-3">
+            <div class="ss-field"><label class="ss-field__label" for="warehouseId">Warehouse<span class="ss-field__required">*</span></label>
+              <select id="warehouseId" name="warehouseId" class="ss-select w-100" data-warehouse-select data-locations-url="/operations/receipts/locations" data-location-target="locationId" required>
+                <option value="">Select warehouse</option>
+                <% warehouses.forEach(function(w) { %><option value="<%= w.id %>" <%= String((values && values.warehouseId) || '') === String(w.id) ? 'selected' : '' %>><%= w.name %> (<%= w.code %>)</option><% }); %>
+              </select>
+            </div>
+          </div>
+          <div class="col-12 col-md-3">
+            <div class="ss-field"><label class="ss-field__label" for="locationId">Location<span class="ss-field__required">*</span></label>
+              <select id="locationId" name="locationId" class="ss-select w-100" required><option value="">Select warehouse first</option></select>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="ss-field"><label class="ss-field__label" for="notes">Notes</label>
+              <textarea id="notes" name="notes" class="ss-textarea" rows="2"><%= (values && values.notes) || '' %></textarea>
+            </div>
+          </div>
+        </div>
+        <h2 class="ss-card__title mt-4 mb-2">Items</h2>
+        <div class="ss-table-wrapper">
+          <table class="ss-table" data-items-table>
+            <thead><tr><th>Product</th><th class="text-end">Quantity</th><th>Unit</th><th class="text-end">Actions</th></tr></thead>
+            <tbody data-items-body>
+              <tr data-item-row>
+                <td><select name="productId" class="ss-select w-100" required><option value="">Select product</option><% products.forEach(function(p) { %><option value="<%= p.id %>"><%= p.name %> (<%= p.sku %>) — <%= p.unitOfMeasure %></option><% }); %></select></td>
+                <td><input type="number" name="quantity" class="ss-input" min="0.001" step="0.001" placeholder="0.000" required /></td>
+                <td><input type="text" name="unitOfMeasure" class="ss-input" placeholder="Optional" maxlength="30" /></td>
+                <td class="text-end"><button type="button" class="ss-btn ss-btn--secondary ss-btn--sm" data-remove-row><i class="bi bi-trash" aria-hidden="true"></i></button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex gap-2 mt-2"><button type="button" class="ss-btn ss-btn--secondary ss-btn--sm" data-add-row><i class="bi bi-plus-lg" aria-hidden="true"></i> Add item</button></div>
+        <template id="productOptions"><% products.forEach(function(p) { %><option value="<%= p.id %>"><%= p.name %> (<%= p.sku %>) — <%= p.unitOfMeasure %></option><% }); %></template>
+        <div class="d-flex justify-content-end gap-2 pt-3 border-top mt-4">
+          <a href="/operations/deliveries" class="ss-btn ss-btn--secondary">Cancel</a>
+          <button type="submit" class="ss-btn ss-btn--primary">Save Draft</button>
+        </div>
+      </form>
+    </div></div>
+  </div>
+</div>

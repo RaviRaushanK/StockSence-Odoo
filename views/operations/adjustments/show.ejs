@@ -1,0 +1,52 @@
+<%- include('../../partials/page-header', { title: `Adjustment ${adjustment.adjustmentNumber}`, subtitle: `Reason: ${adjustment.reason}` }) %>
+
+<div class="row g-3">
+  <div class="col-12 col-lg-8">
+    <div class="ss-card">
+      <header class="ss-card__header"><h2 class="ss-card__title">Adjustment Information</h2><span class="ss-badge <%= adjustment.status === 'DONE' ? 'ss-badge--success' : (adjustment.status === 'CANCELED' ? 'ss-badge--neutral' : 'ss-badge--warning') %>"><%= adjustment.status %></span></header>
+      <div class="ss-card__body">
+        <dl class="row mb-0">
+          <dt class="col-sm-4 text-secondary">Adjustment No.</dt><dd class="col-sm-8"><code><%= adjustment.adjustmentNumber %></code></dd>
+          <dt class="col-sm-4 text-secondary">Reason</dt><dd class="col-sm-8 fw-semibold"><%= adjustment.reason %></dd>
+          <dt class="col-sm-4 text-secondary">Warehouse</dt><dd class="col-sm-8"><%= adjustment.warehouse ? `${adjustment.warehouse.name} (${adjustment.warehouse.code})` : '—' %></dd>
+          <dt class="col-sm-4 text-secondary">Location</dt><dd class="col-sm-8"><%= adjustment.location ? `${adjustment.location.name} (${adjustment.location.code})` : '—' %></dd>
+          <dt class="col-sm-4 text-secondary">Notes</dt><dd class="col-sm-8"><%= adjustment.notes || '—' %></dd>
+          <dt class="col-sm-4 text-secondary">Created By</dt><dd class="col-sm-8"><%= adjustment.creator ? adjustment.creator.fullName : '—' %></dd>
+          <dt class="col-sm-4 text-secondary">Validated By</dt><dd class="col-sm-8"><%= adjustment.validator ? adjustment.validator.fullName : '—' %></dd>
+          <dt class="col-sm-4 text-secondary">Validated At</dt><dd class="col-sm-8"><%= adjustment.validatedAt ? new Date(adjustment.validatedAt).toLocaleString() : '—' %></dd>
+        </dl>
+      </div>
+    </div>
+    <div class="ss-card mt-3">
+      <header class="ss-card__header"><h2 class="ss-card__title">Recorded vs Physical</h2></header>
+      <div class="ss-table-wrapper"><table class="ss-table">
+        <thead><tr><th>Product</th><th class="text-end">Recorded</th><th class="text-end">Physical</th><th class="text-end">Difference</th><th>Unit</th></tr></thead>
+        <tbody>
+          <% (adjustment.items || []).forEach(function(it) { %>
+            <tr>
+              <td><span class="fw-semibold"><%= it.product ? it.product.name : 'Unknown' %></span><small class="d-block text-secondary"><code><%= it.product ? it.product.sku : '—' %></code></small></td>
+              <td class="text-end font-monospace text-secondary"><%= it.recordedQuantity %></td>
+              <td class="text-end font-monospace fw-bold"><%= it.physicalQuantity %></td>
+              <td class="text-end font-monospace fw-bold"><%= Number(it.difference) > 0 ? '+' : '' %><%= it.difference %></td>
+              <td><%= it.unitOfMeasure || (it.product ? it.product.unitOfMeasure : '') %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+  <div class="col-12 col-lg-4">
+    <div class="ss-card"><div class="ss-card__body d-grid gap-2">
+      <a href="/operations/adjustments" class="ss-btn ss-btn--secondary"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to list</a>
+      <% if (adjustment.status !== 'DONE' && adjustment.status !== 'CANCELED') { %>
+        <div class="ss-alert ss-alert--danger mb-0" role="note"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i><span>Validation re-reads the live balance and ignores any client-submitted recorded values.</span></div>
+        <form method="post" action="/operations/adjustments/<%= adjustment.id %>/validate"><input type="hidden" name="_csrf" value="<%= csrfToken %>" /><button type="submit" class="ss-btn ss-btn--primary w-100" data-confirm="Validate adjustment <%= adjustment.adjustmentNumber %>? Stock will be reconciled."><i class="bi bi-check-circle" aria-hidden="true"></i> Validate &amp; Reconcile</button></form>
+        <form method="post" action="/operations/adjustments/<%= adjustment.id %>/cancel"><input type="hidden" name="_csrf" value="<%= csrfToken %>" /><button type="submit" class="ss-btn ss-btn--secondary w-100" data-confirm="Cancel adjustment <%= adjustment.adjustmentNumber %>? No stock will change."><i class="bi bi-x-circle" aria-hidden="true"></i> Cancel Document</button></form>
+      <% } else if (adjustment.status === 'DONE') { %>
+        <div class="ss-alert ss-alert--success mb-0" role="status"><i class="bi bi-lock-fill" aria-hidden="true"></i><span>Validated documents are read-only and remain traceable in Move History.</span></div>
+      <% } else { %>
+        <div class="ss-alert ss-alert--danger mb-0" role="status"><i class="bi bi-x-circle" aria-hidden="true"></i><span>This document was canceled. No stock was changed.</span></div>
+      <% } %>
+    </div></div>
+  </div>
+</div>

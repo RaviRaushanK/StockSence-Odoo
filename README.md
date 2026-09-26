@@ -264,6 +264,34 @@ an explanatory message. No OTP is ever faked or silently accepted.
 - **Location Master Data**: Storage zone/rack/bin management belonging to parent warehouses with scoped unique location codes, description, active/inactive filtering, and status toggle.
 - Responsive server-rendered table UI with search toolbars, filter dropdowns, pagination, and empty states.
 
+## 12. Implemented features (Phase 3: Inventory Engine & Stock Ledger)
+
+- **`StockBalance` Single Source of Truth**: Tracks real-time quantities (`DECIMAL(15,3)`) per product and location, preventing negative balances and enforcing composite uniqueness `(product_id, location_id)`.
+- **`StockMovement` Immutable Ledger**: Logs all stock fluctuations with `movementType` (`RECEIPT`, `DELIVERY`, `TRANSFER_IN`, `TRANSFER_OUT`, `ADJUSTMENT_IN`, `ADJUSTMENT_OUT`), before and after quantities, document references, reasons, and authenticated `performedBy` user auditing.
+- **Atomic `inventoryService`**: Central engine wrapping stock increases, decreases, internal transfers, and physical cycle count adjustments in transactional updates (`LOCK.UPDATE`) to guarantee ledger consistency.
+- **Stock Overview (`/inventory`)**: Displays live inventory balances, reorder level comparisons, and calculated stock status (`OUT OF STOCK`, `LOW STOCK`, `IN STOCK`).
+- **Move History (`/move-history`)**: Comprehensive audit trail view with product, location, movement type, and search filters with pagination.
+- *Note:* Operational transaction screens (Receipts, Deliveries, Transfers, Adjustments) are planned for Phase 4 to build directly on this inventory engine.
+
+
+## 13. Implemented features (Phase 4: Inventory Operations)
+
+- **Receipts** (`/operations/receipts`): multi-line supplier receipts with unique `REC-` numbers, draft creation with no stock effect, atomic validation through `inventoryService.increaseStock()`, `RECEIPT` ledger traceability, double-validation protection and safe cancellation.
+- **Delivery Orders** (`/operations/deliveries`): multi-line customer deliveries with unique `DEL-` numbers, atomic validation through `inventoryService.decreaseStock()`, all-or-nothing shortage handling with no partial postings.
+- **Internal Transfers** (`/operations/transfers`): source/destination warehouse + location documents with unique `TRF-` numbers, side-by-side create form, same-location prevention, atomic validation through `inventoryService.transferStock()` with paired ledger entries.
+- **Inventory Adjustments** (`/operations/adjustments`): cycle-count documents with unique `ADJ-` numbers, server-read recorded quantities, physical counts, computed differences, validation through `inventoryService.adjustStock()` (`ADJUSTMENT_IN` / `ADJUSTMENT_OUT`, none when equal).
+
+## 13. Planned for future phases (Phase 4+)
+
+- Goods receipts (inbound) with supplier references and posting workflows.
+- Delivery orders (outbound) with picking, packing, and dispatch confirmation.
+- Internal transfers between warehouses with transfer documents.
+- Inventory adjustments document workflows.
+- Dashboard analytics built on real query data.
+- OTP password reset once SMTP credentials are available, plus password change for signed-in users.
+- Role-based permissions separating Inventory Manager and Warehouse Staff capabilities.
+- Automated test suites and a CI pipeline.
+
 ## 12. Planned for future phases
 
 - Goods receipts, delivery orders, internal transfers, inventory adjustments and move history.

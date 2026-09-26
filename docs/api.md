@@ -67,12 +67,32 @@ clients that do not accept HTML; browsers get the EJS error pages instead.
 | POST | `/warehouses/:warehouseId/locations/:id/edit` | `locationController.update` | — (redirect) | Protected |
 | POST | `/warehouses/:warehouseId/locations/:id/toggle-status` | `locationController.toggleStatus` | — (redirect) | Protected |
 | POST | `/warehouses/:warehouseId/locations/:id/delete` | `locationController.delete` | — (redirect) | Protected |
+| GET | `/inventory` | `inventoryController.stockOverview` | `inventory/index` | Protected |
 | GET | `/receipts` | `dashboardController.receipts` | `operations/receipts` | Protected |
 | GET | `/deliveries` | `dashboardController.deliveries` | `operations/deliveries` | Protected |
 | GET | `/transfers` | `dashboardController.transfers` | `operations/transfers` | Protected |
 | GET | `/adjustments` | `dashboardController.adjustments` | `operations/adjustments` | Protected |
-| GET | `/move-history` | `dashboardController.moveHistory` | `operations/move-history` | Protected |
+| GET | `/move-history` | `inventoryController.moveHistory` | `operations/move-history` | Protected |
+| GET | `/operations/deliveries` | `deliveryController.list` | `operations/deliveries/index` | Protected |
+| GET | `/operations/deliveries/create` | `deliveryController.showCreate` | `operations/deliveries/create` | Protected |
+| POST | `/operations/deliveries/create` | `deliveryController.create` | — (redirect) | Protected |
+| GET | `/operations/deliveries/:id` | `deliveryController.show` | `operations/deliveries/show` | Protected |
+| POST | `/operations/deliveries/:id/validate` | `deliveryController.validate` | — (redirect) | Protected |
+| POST | `/operations/deliveries/:id/cancel` | `deliveryController.cancel` | — (redirect) | Protected |
+| GET | `/operations/transfers` | `transferController.list` | `operations/transfers/index` | Protected |
+| GET | `/operations/transfers/create` | `transferController.showCreate` | `operations/transfers/create` | Protected |
+| POST | `/operations/transfers/create` | `transferController.create` | — (redirect) | Protected |
+| GET | `/operations/transfers/:id` | `transferController.show` | `operations/transfers/show` | Protected |
+| POST | `/operations/transfers/:id/validate` | `transferController.validate` | — (redirect) | Protected |
+| POST | `/operations/transfers/:id/cancel` | `transferController.cancel` | — (redirect) | Protected |
+| GET | `/operations/adjustments` | `adjustmentController.list` | `operations/adjustments/index` | Protected |
+| GET | `/operations/adjustments/create` | `adjustmentController.showCreate` | `operations/adjustments/create` | Protected |
+| POST | `/operations/adjustments/create` | `adjustmentController.create` | — (redirect) | Protected |
+| GET | `/operations/adjustments/:id` | `adjustmentController.show` | `operations/adjustments/show` | Protected |
+| POST | `/operations/adjustments/:id/validate` | `adjustmentController.validate` | — (redirect) | Protected |
+| POST | `/operations/adjustments/:id/cancel` | `adjustmentController.cancel` | — (redirect) | Protected |
 | GET | `/settings` | `dashboardController.settings` | `settings/index` | Protected |
+
 | * | anything else | — | `errors/404` | Public |
 
 "Guests only" means `redirectIfAuthenticated` sends an already signed-in visitor to `/dashboard`.

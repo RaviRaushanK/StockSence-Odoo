@@ -185,6 +185,21 @@ verification includes it.
 - **`Warehouse`**: `id`, `name`, `code` (unique, uppercase), `address`, `description`, `isActive`, timestamps. Has many `Location` with `RESTRICT` on delete.
 - **`Location`**: `id`, `warehouseId` (FK), `name`, `code` (uppercase, unique scoped per warehouse), `description`, `isActive`, timestamps. Belongs to `Warehouse`.
 
+### Inventory and Ledger models (Phase 3)
+
+- **`StockBalance`**: `id`, `productId` (FK, indexed), `locationId` (FK, indexed), `quantity` (`DECIMAL(15,3)`), timestamps. Enforces single product-location balance via composite unique index `(product_id, location_id)`. Quantity is strictly validated non-negative.
+- **`StockMovement`**: `id`, `productId` (FK, indexed), `locationId` (FK, indexed), `movementType` (`ENUM('RECEIPT', 'DELIVERY', 'TRANSFER_IN', 'TRANSFER_OUT', 'ADJUSTMENT_IN', 'ADJUSTMENT_OUT')`), `quantity` (`DECIMAL(15,3)`), `quantityBefore` (`DECIMAL(15,3)`), `quantityAfter` (`DECIMAL(15,3)`), `referenceType`, `referenceId`, `reason`, `performedBy` (FK to `User`), `createdAt` (immutable audit log).
+- **`inventoryService`**: Central authority for stock mutations (`increaseStock`, `decreaseStock`, `transferStock`, `adjustStock`). Executes all ledger creations and stock balance updates atomically inside Sequelize transactions with row-level locks. Prevents negative stock balances and ensures full traceability.
+
+
+### Operational documents (Phase 4)
+
+- **`Receipt` / `ReceiptItem`**: `receiptNumber` (unique), `supplierName`, `warehouseId`, `locationId`, `status`, `notes`, `createdBy`, `validatedBy`, `validatedAt`. Items hold `productId`, `quantity`, `unitOfMeasure`. Validation calls `inventoryService.increaseStock()` with `movementType RECEIPT`, `referenceType RECEIPT`.
+- **`Delivery` / `DeliveryItem`**: `deliveryNumber`, `customerName`, warehouse/location, status and audit fields. Validation calls `inventoryService.decreaseStock()` with `movementType DELIVERY`, `referenceType DELIVERY`; shortages abort the whole transaction.
+- **`InternalTransfer` / `TransferItem`**: source/destination warehouse/location pairs, status and audit fields. Validation calls `inventoryService.transferStock()` with `referenceType TRANSFER`, emitting paired `TRANSFER_OUT` / `TRANSFER_IN`.
+- **`InventoryAdjustment` / `AdjustmentItem`**: `adjustmentNumber`, warehouse/location, `reason`, status and audit fields. Items store server-authoritative `recordedQuantity`, entered `physicalQuantity` and computed `difference`. Validation calls `inventoryService.adjustStock()` with `referenceType ADJUSTMENT`.
+- Services (`services/receiptService.js`, `deliveryService.js`, `transferService.js`, `adjustmentService.js`, plus shared `operationHelpers.js`) own document creation, relationship checks, state transitions and transaction coordination. Controllers stay thin; routes live in `routes/operationsRoutes.js` under `/operations/...`; EJS views live in `views/operations/{receipts,deliveries,transfers,adjustments}/`.
+
 
 ## 7. Authentication design
 

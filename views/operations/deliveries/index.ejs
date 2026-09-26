@@ -1,0 +1,58 @@
+<%- include('../../partials/page-header', {
+  title: 'Delivery Orders',
+  subtitle: 'Outbound customer deliveries. Validation checks availability and posts through the inventory engine.'
+}) %>
+
+<div class="ss-card">
+  <div class="ss-toolbar">
+    <form class="ss-toolbar__filters" method="get" action="/operations/deliveries" data-filter-form>
+      <div class="ss-toolbar__search">
+        <i class="bi bi-search ss-toolbar__search-icon" aria-hidden="true"></i>
+        <input type="search" name="search" class="ss-input" placeholder="Search number or customer..." value="<%= filters.search || '' %>" />
+      </div>
+      <select name="status" class="ss-select" data-auto-submit>
+        <option value="">All statuses</option>
+        <% ['DRAFT','WAITING','READY','DONE','CANCELED'].forEach(function(s) { %>
+          <option value="<%= s %>" <%= filters.status === s ? 'selected' : '' %>><%= s %></option>
+        <% }); %>
+      </select>
+      <% if (filters.search || filters.status) { %>
+        <a href="/operations/deliveries" class="ss-btn ss-btn--secondary ss-btn--sm">Clear</a>
+      <% } %>
+    </form>
+    <div><a href="/operations/deliveries/create" class="ss-btn ss-btn--primary ss-btn--sm"><i class="bi bi-plus-lg" aria-hidden="true"></i> New Delivery</a></div>
+  </div>
+  <% if (deliveries && deliveries.length > 0) { %>
+    <div class="ss-table-wrapper">
+      <table class="ss-table">
+        <thead><tr><th>Delivery No.</th><th>Customer</th><th>Warehouse / Location</th><th class="text-end">Items</th><th>Status</th><th>Created</th><th class="text-end">Actions</th></tr></thead>
+        <tbody>
+          <% deliveries.forEach(function(r) { %>
+            <tr>
+              <td><code><%= r.deliveryNumber %></code></td>
+              <td><span class="fw-semibold"><%= r.customerName %></span></td>
+              <td><%= r.warehouse ? r.warehouse.name : '—' %><small class="d-block text-secondary"><%= r.location ? r.location.name : '' %></small></td>
+              <td class="text-end"><%= r.itemCount %></td>
+              <td><span class="ss-badge <%= r.status === 'DONE' ? 'ss-badge--success' : (r.status === 'CANCELED' ? 'ss-badge--neutral' : 'ss-badge--warning') %>"><%= r.status %></span></td>
+              <td><span class="text-nowrap"><%= new Date(r.createdAt).toLocaleDateString() %></span></td>
+              <td><div class="ss-actions-cell justify-content-end"><a href="/operations/deliveries/<%= r.id %>" class="ss-btn ss-btn--secondary ss-btn--sm"><i class="bi bi-eye" aria-hidden="true"></i> View</a></div></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+    <% if (pagination.totalPages > 1) { %>
+      <div class="ss-pagination"><span>Page <%= pagination.page %> of <%= pagination.totalPages %> (<%= pagination.total %> total)</span>
+        <div class="d-flex gap-2">
+          <% if (pagination.hasPrev) { %><a href="?page=<%= pagination.page - 1 %>&search=<%= encodeURIComponent(filters.search || '') %>&status=<%= filters.status || '' %>" class="ss-btn ss-btn--secondary ss-btn--sm">Previous</a><% } %>
+          <% if (pagination.hasNext) { %><a href="?page=<%= pagination.page + 1 %>&search=<%= encodeURIComponent(filters.search || '') %>&status=<%= filters.status || '' %>" class="ss-btn ss-btn--secondary ss-btn--sm">Next</a><% } %>
+        </div>
+      </div>
+    <% } %>
+  <% } else { %>
+    <div class="p-4">
+      <%- include('../../partials/empty-state', { icon: 'bi-truck', title: (filters.search || filters.status) ? 'No matching deliveries' : 'No delivery orders yet', description: (filters.search || filters.status) ? 'Try adjusting your search or filter.' : 'Create your first delivery order to record outbound customer stock.' }) %>
+      <% if (!filters.search && !filters.status) { %><div class="text-center mt-3"><a href="/operations/deliveries/create" class="ss-btn ss-btn--primary ss-btn--sm"><i class="bi bi-plus-lg" aria-hidden="true"></i> New Delivery</a></div><% } %>
+    </div>
+  <% } %>
+</div>

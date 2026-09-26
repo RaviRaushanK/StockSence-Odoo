@@ -1,9 +1,158 @@
-<%- include('../partials/page-header', { title: title }) %>
-
-<%- include('../partials/card', {
-  body: include('../partials/empty-state', {
-    icon: 'bi-cone-striped',
-    title: placeholder.title + ' is not available yet',
-    description: placeholder.description,
-  }),
+<%- include('../partials/page-header', {
+  title: 'Move History',
+  subtitle: 'Traceable inventory ledger logging every balance-affecting movement.'
 }) %>
+
+<div class="ss-card">
+  <div class="ss-toolbar">
+    <form class="ss-toolbar__filters" method="get" action="/move-history" data-filter-form>
+      <div class="ss-toolbar__search">
+        <i class="bi bi-search ss-toolbar__search-icon" aria-hidden="true"></i>
+        <input
+          type="search"
+          name="search"
+          class="ss-input"
+          placeholder="Search reference or reason..."
+          value="<%= filters.search || '' %>"
+        />
+      </div>
+
+      <select name="productId" class="ss-select" data-auto-submit>
+        <option value="">All Products</option>
+        <% products.forEach(function(p) { %>
+          <option value="<%= p.id %>" <%= String(filters.productId) === String(p.id) ? 'selected' : '' %>>
+            <%= p.name %> (<%= p.sku %>)
+          </option>
+        <% }); %>
+      </select>
+
+      <select name="movementType" class="ss-select" data-auto-submit>
+        <option value="">All Movement Types</option>
+        <% movementTypes.forEach(function(type) { %>
+          <option value="<%= type %>" <%= filters.movementType === type ? 'selected' : '' %>>
+            <%= type.replace('_', ' ') %>
+          </option>
+        <% }); %>
+      </select>
+
+      <% if (filters.search || filters.productId || filters.movementType) { %>
+        <a href="/move-history" class="ss-btn ss-btn--secondary ss-btn--sm">Clear</a>
+      <% } %>
+    </form>
+
+    <div class="d-flex gap-2">
+      <a href="/inventory" class="ss-btn ss-btn--secondary ss-btn--sm">
+        <i class="bi bi-layers" aria-hidden="true"></i> Stock Overview
+      </a>
+      <a href="/products" class="ss-btn ss-btn--secondary ss-btn--sm">
+        <i class="bi bi-box-seam" aria-hidden="true"></i> Products
+      </a>
+    </div>
+  </div>
+
+  <% if (movements && movements.length > 0) { %>
+    <div class="ss-table-wrapper">
+      <table class="ss-table">
+        <thead>
+          <tr>
+            <th>Date / Time</th>
+            <th>Product</th>
+            <th>Location</th>
+            <th>Movement Type</th>
+            <th class="text-end">Quantity</th>
+            <th class="text-end">Before</th>
+            <th class="text-end">After</th>
+            <th>Reference</th>
+            <th>Reason</th>
+            <th>Performed By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% movements.forEach(function(m) { %>
+            <tr>
+              <td>
+                <span class="text-nowrap"><%= new Date(m.createdAt).toLocaleDateString() %></span>
+                <small class="d-block text-secondary text-nowrap"><%= new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %></small>
+              </td>
+              <td>
+                <span class="fw-semibold"><%= m.product ? m.product.name : 'Unknown Product' %></span>
+                <small class="d-block text-secondary">SKU: <code><%= m.product ? m.product.sku : '—' %></code></small>
+              </td>
+              <td>
+                <span><%= m.location ? m.location.name : 'Unknown Location' %></span>
+                <% if (m.location && m.location.warehouse) { %>
+                  <small class="d-block text-secondary"><%= m.location.warehouse.name %> (<%= m.location.warehouse.code %>)</small>
+                <% } %>
+              </td>
+              <td>
+                <%
+                  let badgeTone = 'neutral';
+                  if (m.movementType === 'RECEIPT' || m.movementType === 'TRANSFER_IN' || m.movementType === 'ADJUSTMENT_IN') {
+                    badgeTone = 'success';
+                  } else if (m.movementType === 'DELIVERY' || m.movementType === 'TRANSFER_OUT' || m.movementType === 'ADJUSTMENT_OUT') {
+                    badgeTone = 'warning';
+                  }
+                %>
+                <span class="ss-badge ss-badge--<%= badgeTone %>">
+                  <%= m.movementType.replace('_', ' ') %>
+                </span>
+              </td>
+              <td class="text-end">
+                <span class="fw-bold font-monospace"><%= m.quantity %></span>
+                <% if (m.product && m.product.unitOfMeasure) { %>
+                  <small class="text-secondary"><%= m.product.unitOfMeasure %></small>
+                <% } %>
+              </td>
+              <td class="text-end font-monospace text-secondary"><%= m.quantityBefore %></td>
+              <td class="text-end font-monospace fw-semibold"><%= m.quantityAfter %></td>
+              <td>
+                <% if (m.referenceId) { %>
+                  <code><%= m.referenceType ? m.referenceType + ': ' : '' %><%= m.referenceId %></code>
+                <% } else if (m.referenceType) { %>
+                  <span class="text-secondary"><%= m.referenceType %></span>
+                <% } else { %>
+                  <span class="text-secondary">—</span>
+                <% } %>
+              </td>
+              <td>
+                <span class="text-truncate d-inline-block" style="max-width: 180px;" title="<%= m.reason || '' %>">
+                  <%= m.reason || '—' %>
+                </span>
+              </td>
+              <td>
+                <span class="text-nowrap"><%= m.user ? m.user.fullName : 'System' %></span>
+                <% if (m.user && m.user.email) { %>
+                  <small class="d-block text-secondary text-truncate" style="max-width: 160px;"><%= m.user.email %></small>
+                <% } %>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+
+    <% if (pagination.totalPages > 1) { %>
+      <div class="ss-pagination">
+        <span>Showing page <%= pagination.page %> of <%= pagination.totalPages %> (<%= pagination.total %> total)</span>
+        <div class="d-flex gap-2">
+          <% if (pagination.hasPrev) { %>
+            <a href="?page=<%= pagination.page - 1 %>&search=<%= encodeURIComponent(filters.search || '') %>&productId=<%= filters.productId || '' %>&movementType=<%= filters.movementType || '' %>" class="ss-btn ss-btn--secondary ss-btn--sm">Previous</a>
+          <% } %>
+          <% if (pagination.hasNext) { %>
+            <a href="?page=<%= pagination.page + 1 %>&search=<%= encodeURIComponent(filters.search || '') %>&productId=<%= filters.productId || '' %>&movementType=<%= filters.movementType || '' %>" class="ss-btn ss-btn--secondary ss-btn--sm">Next</a>
+          <% } %>
+        </div>
+      </div>
+    <% } %>
+  <% } else { %>
+    <div class="p-4">
+      <%- include('../partials/empty-state', {
+        icon: 'bi-clock-history',
+        title: filters.search || filters.productId || filters.movementType ? 'No matching movements' : 'No stock movements recorded yet.',
+        description: filters.search || filters.productId || filters.movementType
+          ? 'Try adjusting your search filters.'
+          : 'Stock movement history logs every change in physical inventory.'
+      }) %>
+    </div>
+  <% } %>
+</div>

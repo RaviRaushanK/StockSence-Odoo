@@ -7,11 +7,17 @@ const NAV_SECTIONS = [
     title: 'Inventory',
     items: [
       { label: 'Products', path: '/products', icon: 'bi-box-seam' },
-      { label: 'Receipts', path: '/receipts', icon: 'bi-box-arrow-in-down' },
-      { label: 'Delivery Orders', path: '/deliveries', icon: 'bi-truck' },
-      { label: 'Internal Transfers', path: '/transfers', icon: 'bi-arrow-left-right' },
-      { label: 'Inventory Adjustments', path: '/adjustments', icon: 'bi-sliders' },
+      { label: 'Stock Overview', path: '/inventory', icon: 'bi-layers' },
       { label: 'Move History', path: '/move-history', icon: 'bi-clock-history' },
+    ],
+  },
+  {
+    title: 'Operations',
+    items: [
+      { label: 'Receipts', path: '/operations/receipts', icon: 'bi-box-arrow-in-down' },
+      { label: 'Delivery Orders', path: '/operations/deliveries', icon: 'bi-truck' },
+      { label: 'Internal Transfers', path: '/operations/transfers', icon: 'bi-arrow-left-right' },
+      { label: 'Inventory Adjustments', path: '/operations/adjustments', icon: 'bi-sliders' },
     ],
   },
   {

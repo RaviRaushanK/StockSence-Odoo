@@ -1,0 +1,45 @@
+<%- include('../../partials/page-header', { title: `Receipt ${receipt.receiptNumber}`, subtitle: `Supplier: ${receipt.supplierName}` }) %>
+
+<div class="row g-3">
+  <div class="col-12 col-lg-8">
+    <div class="ss-card">
+      <header class="ss-card__header"><h2 class="ss-card__title">Receipt Information</h2><span class="ss-badge <%= receipt.status === 'DONE' ? 'ss-badge--success' : (receipt.status === 'CANCELED' ? 'ss-badge--neutral' : 'ss-badge--warning') %>"><%= receipt.status %></span></header>
+      <div class="ss-card__body">
+        <dl class="row mb-0">
+          <dt class="col-sm-4 text-secondary">Receipt No.</dt><dd class="col-sm-8"><code><%= receipt.receiptNumber %></code></dd>
+          <dt class="col-sm-4 text-secondary">Supplier</dt><dd class="col-sm-8 fw-semibold"><%= receipt.supplierName %></dd>
+          <dt class="col-sm-4 text-secondary">Warehouse</dt><dd class="col-sm-8"><%= receipt.warehouse ? `${receipt.warehouse.name} (${receipt.warehouse.code})` : '—' %></dd>
+          <dt class="col-sm-4 text-secondary">Location</dt><dd class="col-sm-8"><%= receipt.location ? `${receipt.location.name} (${receipt.location.code})` : '—' %></dd>
+          <dt class="col-sm-4 text-secondary">Notes</dt><dd class="col-sm-8"><%= receipt.notes || '—' %></dd>
+          <dt class="col-sm-4 text-secondary">Created By</dt><dd class="col-sm-8"><%= receipt.creator ? receipt.creator.fullName : '—' %></dd>
+          <dt class="col-sm-4 text-secondary">Validated By</dt><dd class="col-sm-8"><%= receipt.validator ? receipt.validator.fullName : '—' %></dd>
+          <dt class="col-sm-4 text-secondary">Validated At</dt><dd class="col-sm-8"><%= receipt.validatedAt ? new Date(receipt.validatedAt).toLocaleString() : '—' %></dd>
+        </dl>
+      </div>
+    </div>
+    <div class="ss-card mt-3">
+      <header class="ss-card__header"><h2 class="ss-card__title">Items</h2></header>
+      <div class="ss-table-wrapper"><table class="ss-table">
+        <thead><tr><th>Product</th><th>SKU</th><th class="text-end">Quantity</th><th>Unit</th></tr></thead>
+        <tbody>
+          <% (receipt.items || []).forEach(function(it) { %>
+            <tr><td class="fw-semibold"><%= it.product ? it.product.name : 'Unknown' %></td><td><code><%= it.product ? it.product.sku : '—' %></code></td><td class="text-end font-monospace fw-bold"><%= it.quantity %></td><td><%= it.unitOfMeasure || (it.product ? it.product.unitOfMeasure : '') %></td></tr>
+          <% }); %>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+  <div class="col-12 col-lg-4">
+    <div class="ss-card"><div class="ss-card__body d-grid gap-2">
+      <a href="/operations/receipts" class="ss-btn ss-btn--secondary"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to list</a>
+      <% if (receipt.status !== 'DONE' && receipt.status !== 'CANCELED') { %>
+        <form method="post" action="/operations/receipts/<%= receipt.id %>/validate"><input type="hidden" name="_csrf" value="<%= csrfToken %>" /><button type="submit" class="ss-btn ss-btn--primary w-100" data-confirm="Validate receipt <%= receipt.receiptNumber %>? Stock will increase."><i class="bi bi-check-circle" aria-hidden="true"></i> Validate &amp; Post Stock</button></form>
+        <form method="post" action="/operations/receipts/<%= receipt.id %>/cancel"><input type="hidden" name="_csrf" value="<%= csrfToken %>" /><button type="submit" class="ss-btn ss-btn--secondary w-100" data-confirm="Cancel receipt <%= receipt.receiptNumber %>? No stock will change."><i class="bi bi-x-circle" aria-hidden="true"></i> Cancel Document</button></form>
+      <% } else if (receipt.status === 'DONE') { %>
+        <div class="ss-alert ss-alert--success mb-0" role="status"><i class="bi bi-lock-fill" aria-hidden="true"></i><span>Validated documents are read-only and remain traceable in Move History.</span></div>
+      <% } else { %>
+        <div class="ss-alert ss-alert--danger mb-0" role="status"><i class="bi bi-x-circle" aria-hidden="true"></i><span>This document was canceled. No stock was changed.</span></div>
+      <% } %>
+    </div></div>
+  </div>
+</div>
